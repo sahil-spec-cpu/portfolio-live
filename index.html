@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahil Singh | IT Architect & Automation Specialist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        if (!window.Lenis) {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"><\/script>');
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        'accent-blue': '#4CA9FF',
+                        'accent-purple': '#A663CC',
+                        'accent-gold': '#FFD700',
+                    },
+                    backgroundImage: {
+                        'noise': "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noiseFilter\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.65\" numOctaves=\"3\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noiseFilter)\" opacity=\"0.05\"/%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                        'grid-move': 'gridMove 20s linear infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '200% center' },
+                            '100%': { backgroundPosition: '-200% center' },
+                        },
+                        gridMove: {
+                            '0%': { transform: 'perspective(500px) rotateX(60deg) translateY(0)' },
+                            '100%': { transform: 'perspective(500px) rotateX(60deg) translateY(50px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Ambient Aurora (Red/Blue) --- */
+        .hero-aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            animation: blob 15s infinite alternate;
+        }
+
+        .blob-blue {
+            top: 10%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: #4CA9FF;
+            animation-delay: 0s;
+        }
+
+        .blob-red {
+            bottom: 10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: #A663CC;
+            animation-delay: 2s;
+        }
+
+        /* --- Moving Grid Background (Lower Sections) --- */
+        .footer-grid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.2;
+        }
+
+        .grid-lines {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            bottom: -50%;
+            left: -50%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 20s linear infinite;
+        }
+
+        /* Cursor Light (Global) */
+        .ambient-light {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(40, 40, 55, 0.25) 0%, rgba(5, 5, 5, 0) 70%);
+            transition: all 0.1s ease-out;
+            opacity: 0.8;
+            mix-blend-mode: screen;
+        }
+
+        /* Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+        }
+
+        /* --- Sticky Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(16px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            color: white;
+            z-index: 110;
+        }
+
+        .desktop-menu {
+            display: none;
+        }
+
+        @media(min-width: 768px) {
+            .desktop-menu {
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+            }
+        }
+
+        .nav-link {
+            position: relative;
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .btn-talk {
+            background: white;
+            color: black;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-talk:hover {
+            transform: scale(1.05);
+            background: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .mobile-toggle {
+            display: block;
+            z-index: 110;
+            cursor: pointer;
+        }
+
+        @media(min-width: 768px) {
+            .mobile-toggle {
+                display: none;
+            }
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            z-index: 100;
+            transform: translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-menu-overlay.open {
+            transform: translateY(0);
+        }
+
+        .mobile-link {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #ccc;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s;
+        }
+
+        .mobile-menu-overlay.open .mobile-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Hero Sequence --- */
+        #hero-track {
+            height: 550vh;
+            position: relative;
+        }
+
+        #sticky-view {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background: black;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 0;
+        }
+
+        /* --- Cinematic Text Animations --- */
+        .overlay-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            padding: 0 1rem;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .mask-container {
+            overflow: hidden;
+            margin-bottom: -0.1em;
+        }
+
+        .mask-container h2,
+        .mask-container p {
+            transform: translateY(100%);
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s ease;
+            opacity: 0;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Shimmer */
+        .animate-shimmer {
+            background: linear-gradient(90deg, #fff 0%, #888 20%, #fff 40%, #fff 100%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        .visible .mask-container h2,
+        .visible .mask-container p {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .visible .mask-container:nth-child(2) h2 {
+            transition-delay: 0.1s;
+        }
+
+        .visible .mask-container:nth-child(3) h2 {
+            transition-delay: 0.2s;
+        }
+
+        .text-gradient-blue {
+            background: linear-gradient(135deg, #fff 30%, #4CA9FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #fff 30%, #A663CC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #fff 30%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Content Layout --- */
+        #main-content {
+            position: relative;
+            z-index: 20;
+            background: linear-gradient(to bottom, #050505, #000);
+        }
+
+        .section-padding {
+            padding: 6rem 1.5rem;
+        }
+
+        @media(min-width: 768px) {
+            .section-padding {
+                padding: 8rem 4rem;
+            }
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media(min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 450px);
+                gap: 2rem;
+            }
+        }
+
+        .bento-item {
+            position: relative;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(60px) scale(0.98);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-section.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        footer {
+            background-color: #000;
+            border-top: 1px solid #111;
+            padding: 6rem 1.5rem 3rem 1.5rem;
+            background: linear-gradient(180deg, #050505 0%, #080808 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Project Detail Overlay --- */
+        #project-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #050505 100%);
+            z-index: 200;
+            transform: translateY(100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #project-overlay.open {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 210;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: white;
+            color: black;
+            transform: rotate(90deg);
+        }
+
+        .project-hero {
+            height: 70vh;
+            width: 100%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .project-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #050505, transparent 80%);
+        }
+
+        .project-hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0 5% 4rem 5%;
+            z-index: 10;
+        }
+
+        .project-category {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-title {
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: white;
+        }
+
+        .project-content-body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem 8rem 2rem;
+            color: #a3a3a3;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content-body h2 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .project-content-body h2:first-child {
+            margin-top: 0;
+        }
+
+        .project-content-body p {
+            margin-bottom: 2rem;
+        }
+
+        .project-content-body strong {
+            color: white;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+    <div class="ambient-light" id="ambient-light"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">SAHIL SINGH.</a>
+        <div class="desktop-menu">
+            <a href="#about" class="nav-link">Profile</a>
+            <a href="#work" class="nav-link">Projects</a>
+            <a href="#skills" class="nav-link">Expertise</a>
+            <a href="#contact" class="btn-talk">Let's Talk</a>
+        </div>
+        <div class="mobile-toggle" onclick="toggleMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+    </nav>
+    <div id="mobile-menu" class="mobile-menu-overlay">
+        <a href="#about" class="mobile-link" onclick="toggleMenu()">Profile</a>
+        <a href="#work" class="mobile-link" style="transition-delay: 0.1s" onclick="toggleMenu()">Projects</a>
+        <a href="#skills" class="mobile-link" style="transition-delay: 0.2s" onclick="toggleMenu()">Expertise</a>
+        <a href="#contact" class="mobile-link" style="transition-delay: 0.3s" onclick="toggleMenu()">Contact</a>
+        <div class="absolute top-6 right-8 cursor-pointer" onclick="toggleMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading"
+        class="fixed inset-0 bg-black z-[200] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="text-sm font-medium tracking-[0.2em] uppercase mb-4 text-white">Sahil Singh</div>
+        <div class="w-48 h-[1px] bg-gray-800 overflow-hidden">
+            <div id="load-progress" class="h-full bg-white w-0 transition-all duration-100 ease-out"></div>
+        </div>
+    </div>
+
+    <!-- Project Detail Overlay -->
+    <div id="project-overlay" data-lenis-prevent>
+        <div class="close-btn" onclick="closeProject()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div id="project-detail-content">
+            <!-- Dynamic Content Injected JS -->
+        </div>
+    </div>
+
+    <!-- Scroll Sequence -->
+    <div id="hero-track">
+        <div id="sticky-view">
+            <div id="hero-aurora" class="hero-aurora">
+                <div class="blob blob-blue"></div>
+                <div class="blob blob-red"></div>
+            </div>
+            <canvas id="hero-canvas"></canvas>
+
+            <!-- 1. Intro -->
+            <div id="text-1" class="overlay-text animate-float">
+                <div class="mask-container">
+                    <h2 class="text-4xl md:text-8xl font-bold tracking-tighter mb-2 animate-shimmer">HELLO.</h2>
+                </div>
+                <div class="mask-container">
+                    <p class="text-xl md:text-3xl font-light text-gray-300 tracking-wide uppercase">Welcome to the
+                        future of work</p>
+                </div>
+            </div>
+
+            <!-- 2. Role 1 -->
+            <div id="text-2" class="overlay-text">
+                <div class="mask-container">
+                    <h2 class="text-5xl md:text-9xl font-bold tracking-tighter">AUTOMATION</h2>
+                </div>
+                <div class="mask-container">
+                    <h2 class="text-5xl md:text-9xl font-bold tracking-tighter text-gradient-blue">SPECIALIST</h2>
+                </div>
+            </div>
+
+            <!-- 3. Role 2 -->
+            <div id="text-3" class="overlay-text">
+                <div class="mask-container">
+                    <h2 class="text-5xl md:text-9xl font-bold tracking-tighter">GOOGLE APPS</h2>
+                </div>
+                <div class="mask-container">
+                    <h2 class="text-5xl md:text-9xl font-bold tracking-tighter text-gradient-purple">ARCHITECT</h2>
+                </div>
+            </div>
+
+            <!-- 4. Role 3 -->
+            <div id="text-4" class="overlay-text">
+                <div class="mask-container">
+                    <h2 class="text-5xl md:text-8xl font-bold tracking-tighter uppercase">Creative</h2>
+                </div>
+                <div class="mask-container">
+                    <h2 class="text-5xl md:text-8xl font-bold tracking-tighter text-gray-500 uppercase">Technologist
+                    </h2>
+                </div>
+            </div>
+
+            <!-- 5. Mission -->
+            <div id="text-5" class="overlay-text">
+                <div class="mask-container">
+                    <h2 class="text-4xl md:text-7xl font-bold tracking-tighter text-gradient-gold">REVOLUTIONIZING</h2>
+                </div>
+                <div class="mask-container">
+                    <h2 class="text-4xl md:text-7xl font-bold tracking-tighter">WORKFLOWS</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- About Section -->
+        <section id="about" class="section-padding container mx-auto px-6 border-b border-gray-800/30 reveal-section">
+            <div class="grid md:grid-cols-12 gap-12">
+                <div class="md:col-span-4">
+                    <span class="block w-12 h-[2px] bg-white mb-6"></span>
+                    <h3 class="text-xl md:text-2xl font-light leading-snug text-gray-400">Transforming <br><span
+                            class="text-white">Business Logic</span> into <br><span class="text-white">Seamless
+                            Code.</span></h3>
+                </div>
+                <div class="md:col-span-8">
+                    <p class="text-xl md:text-3xl font-light leading-relaxed mb-8 text-gray-200">
+                        I am an <strong class="text-white font-semibold">IT & Business Development Manager</strong> with
+                        a relentless drive for efficiency.
+                        Currently powering <span class="border-b border-gray-700 pb-1 text-white">AKS Valuers</span>, I
+                        build custom software ecosystems that replace manual chaos with automated precision.
+                    </p>
+                    <div class="grid grid-cols-2 gap-8 text-xs md:text-sm tracking-widest uppercase text-gray-500">
+                        <div>
+                            <span class="block text-white font-bold text-lg mb-1">AKS Valuers</span>
+                            Current Role
+                        </div>
+                        <div>
+                            <span class="block text-white font-bold text-lg mb-1">PUMA</span>
+                            Former Floor Manager
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bento Grid Projects -->
+        <section id="work" class="section-padding container mx-auto px-6 reveal-section">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-gray-800 pb-8">
+                <div>
+                    <span
+                        class="text-accent-blue font-bold tracking-widest text-xs uppercase mb-2 block">Portfolio</span>
+                    <h3 class="text-4xl md:text-6xl font-bold text-white">Selected Work</h3>
+                </div>
+                <!-- <a href="#" class="text-white border-b border-white pb-1 hover:text-accent-blue transition-colors mt-4 md:mt-0">View All Projects</a> -->
+            </div>
+
+            <div class="bento-grid">
+                <!-- Project 1 -->
+                <div class="bento-item col-span-2 row-span-2 group cursor-pointer" onclick="openProject('valuation')">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <!-- Abstract UI -->
+                    <div
+                        class="absolute top-10 left-10 right-10 bottom-0 bg-neutral-900 rounded-t-xl border border-gray-700 shadow-2xl overflow-hidden opacity-90 transition-transform group-hover:-translate-y-4 duration-500">
+                        <div class="w-full h-8 bg-black flex items-center px-4 gap-2 border-b border-gray-800">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="p-6 grid grid-cols-3 gap-4">
+                            <div class="h-40 bg-gray-800/50 rounded animate-pulse"></div>
+                            <div class="h-40 bg-gray-800/50 rounded animate-pulse delay-75"></div>
+                            <div class="h-40 bg-gray-800/50 rounded animate-pulse delay-150"></div>
+                        </div>
+                    </div>
+
+                    <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
+                        <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Apps
+                                    Script</span>
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Automation</span>
+                            </div>
+                            <h4 class="text-4xl font-bold mb-3 leading-tight">Property Valuation<br>Automation</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors max-w-md">
+                                Enterprise-grade reporting system reducing manual work by 60%.</p>
+                        </div>
+
+                        <div
+                            class="mt-8 flex items-center gap-2 text-accent-blue font-medium tracking-wide uppercase text-sm opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                            <span>Read Case Study</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bento-item col-span-1 row-span-2 group cursor-pointer" onclick="openProject('dashboards')">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-b from-slate-900 to-black group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div
+                        class="absolute inset-0 flex items-center justify-center opacity-10 font-bold text-[12rem] text-white select-none">
+                        01</div>
+                    <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
+                        <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">Analytics</span>
+                            <h4 class="text-3xl font-bold mb-3">Admin Dashboards</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Real-time
+                                tracking for team performance.</p>
+                        </div>
+                        <div
+                            class="mt-6 flex items-center gap-2 text-accent-blue font-medium tracking-wide uppercase text-sm opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                            <span>Explore</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="bento-item col-span-1 md:col-span-3 h-[300px] group cursor-pointer"
+                    onclick="openProject('creative')">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-purple-900 to-black group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="bento-content p-8 flex justify-between items-end relative z-20 h-full">
+                        <div class="transform group-hover:-translate-x-2 transition-transform duration-500">
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">Visual
+                                Arts</span>
+                            <h4 class="text-4xl font-bold mb-2">3D & Creative Portfolio</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Blender,
+                                AutoCAD & VFX Compositions.</p>
+                        </div>
+                        <div
+                            class="hidden md:flex w-16 h-16 rounded-full border border-white/20 items-center justify-center bg-white/5 backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all duration-300">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="7" y1="17" x2="17" y2="7"></line>
+                                <polyline points="7 7 17 7 17 17"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capabilities -->
+        <section id="skills" class="section-padding bg-black/60 border-t border-gray-900 reveal-section">
+            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16">
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500 mb-8">Capabilities</h3>
+                    <h2 class="text-4xl md:text-5xl leading-tight font-medium">Logic meets <br><span
+                            class="text-accent-blue">Design.</span></h2>
+                </div>
+                <div class="space-y-6">
+                    <div class="skill-card">
+                        <h4 class="text-2xl font-bold mb-3 text-white">Automation & Systems</h4>
+                        <p class="text-gray-400 leading-relaxed mb-4">Expert in Google Apps Script, building custom
+                            APIs, automating Google Sheets/Forms, and developing internal tools.</p>
+                    </div>
+                    <div class="skill-card">
+                        <h4 class="text-2xl font-bold mb-3 text-white">Creative Direction</h4>
+                        <p class="text-gray-400 leading-relaxed mb-4">Proficient in 3D modeling (Blender), architectural
+                            layout (AutoCAD), and delivering high-impact visual presentations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact">
+            <!-- Dynamic Grid Background -->
+            <div class="footer-grid">
+                <div class="grid-lines"></div>
+            </div>
+
+            <div class="container mx-auto max-w-6xl relative z-10">
+                <!-- Large Animated CTA -->
+                <div class="reveal-section mb-24">
+                    <p class="uppercase tracking-widest font-bold mb-6 text-gray-500 text-sm">Have an idea?</p>
+                    <a href="mailto:sandhusahil4@gmail.com"
+                        class="text-[12vw] leading-[0.8] font-bold tracking-tighter hover:text-gray-300 transition-colors block text-white">LET'S
+                        TALK.</a>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-12 border-t border-gray-800 pt-12 reveal-section">
+                    <div>
+                        <h5 class="text-gray-500 mb-4 text-xs tracking-widest uppercase">Contact</h5>
+                        <p class="text-xl font-medium text-white mb-2">+91 70421 67643</p>
+                        <a href="mailto:sandhusahil4@gmail.com"
+                            class="text-xl text-gray-400 hover:text-white transition-colors">sandhusahil4@gmail.com</a>
+                    </div>
+                    <div>
+                        <h5 class="text-gray-500 mb-4 text-xs tracking-widest uppercase">Location</h5>
+                        <p class="text-xl text-gray-400">B-Block, Ramesh Nagar,<br>New Delhi - 110015</p>
+                    </div>
+                    <div>
+                        <h5 class="text-gray-500 mb-4 text-xs tracking-widest uppercase">Socials</h5>
+                        <div class="flex flex-col gap-2 items-start">
+                            <a href="https://github.com/Sahilsingh31-del"
+                                class="text-lg text-white hover:text-accent-blue transition-colors">GitHub ↗</a>
+                            <a href="#" class="text-lg text-white hover:text-accent-blue transition-colors">LinkedIn
+                                ↗</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 flex flex-col md:flex-row justify-between text-sm text-gray-600 reveal-section">
+                    <p>&copy; 2026 Sahil Singh. IT Architect.</p>
+                    <p class="mt-2 md:mt-0">Designed & Built in New Delhi.</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Script -->
+    <script>
+        // --- ASSET CONFIG ---
+        const frameCount = 192;
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        const loadingScreen = document.getElementById('loading');
+        const loadProgress = document.getElementById('load-progress');
+        const heroTrack = document.getElementById('hero-track');
+        const textElements = document.querySelectorAll('.overlay-text');
+        const heroAurora = document.getElementById('hero-aurora');
+
+        // --- MOUSE FOLLOW LIGHT ---
+        const ambientLight = document.getElementById('ambient-light');
+        document.addEventListener('mousemove', (e) => {
+            ambientLight.style.left = e.clientX + 'px';
+            ambientLight.style.top = e.clientY + 'px';
+        });
+
+        // --- PROJECT DATA & OVERLAY ---
+        const projects = {
+            'valuation': {
+                title: 'Property Valuation Automation',
+                category: 'Google Apps Script / Automation',
+                image: 'linear-gradient(to bottom, #111, #000)',
+                content: `
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">The Challenge</h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">AKS Valuers faced a critical bottleneck: manual report generation for property valuations was consuming 60% of their operational time. Errors were frequent, and turnaround times were high.</p>
+                    
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up delay-200">The Solution</h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-300">I architected a completely automated pipeline using Google Apps Script. 
+                    <br><br>
+                    <strong class="text-white">1. Input:</strong> Field agents submit data via a custom Google Form.<br>
+                    <strong class="text-white">2. Processing:</strong> A script instantly validates input, pulls comparable market data, and calculates valuation estimates.<br>
+                    <strong class="text-white">3. Output:</strong> A PDF report is auto-generated and emailed to the manager for final sign-off.</p>
+
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up delay-200">Impact</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-up delay-300">
+                        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+                            <h3 class="text-3xl font-bold text-accent-green mb-2">60%</h3>
+                            <p class="text-sm text-gray-400 uppercase tracking-widest">Reduction in manual entry</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+                            <h3 class="text-3xl font-bold text-blue-400 mb-2">0%</h3>
+                            <p class="text-sm text-gray-400 uppercase tracking-widest">Calculation Errors</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+                            <h3 class="text-3xl font-bold text-purple-400 mb-2">2x</h3>
+                            <p class="text-sm text-gray-400 uppercase tracking-widest">Faster Delivery</p>
+                        </div>
+                    </div>
+                `
+            },
+            'dashboards': {
+                title: 'Admin Intelligence Dashboard',
+                category: 'Analytics / Visualization',
+                image: 'linear-gradient(to bottom, #0f172a, #000)',
+                content: `
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">Overview</h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">To manage a large team of field agents, real-time visibility was essential. I built a centralized dashboard system that provides actionable insights at a glance.</p>
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up delay-200">Features</h2>
+                    <ul class="space-y-4 text-xl text-gray-300 fade-up delay-300">
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Live location tracking of field agents</li>
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-500"></span> Performance heatmaps by region</li>
+                        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Automated daily summaries sent to leadership</li>
+                    </ul>
+                `
+            },
+            'creative': {
+                title: '3D & Visual Arts Portfolio',
+                category: 'Creative Design',
+                image: 'linear-gradient(to bottom, #2e1065, #000)',
+                content: `
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">Design Philosophy</h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">Beyond code, I explore the intersection of geometry and light. Using Blender and AutoCAD, I create architectural visualizations that help stakeholders understand complex spatial modifications.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-up delay-200">
+                        <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative group">
+                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="text-white tracking-widest uppercase text-sm">Interior Render</span>
+                            </div>
+                        </div>
+                        <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative group">
+                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="text-white tracking-widest uppercase text-sm">Exterior Concept</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function openProject(id) {
+            const data = projects[id];
+            const overlay = document.getElementById('project-overlay');
+            const container = document.getElementById('project-detail-content');
+
+            container.innerHTML = `
+                <div class="project-hero" style="background-image: ${data.image}">
+                    <div class="project-hero-content">
+                        <span class="project-category">${data.category}</span>
+                        <h1 class="project-title">${data.title}</h1>
+                    </div>
+                </div>
+                <div class="project-content-body">
+                    ${data.content}
+                </div>
+            `;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            if (window.lenis && typeof window.lenis.stop === 'function') window.lenis.stop();
+        }
+
+        function closeProject() {
+            document.getElementById('project-overlay').classList.remove('open');
+            document.body.style.overflow = 'auto';
+            if (window.lenis && typeof window.lenis.start === 'function') window.lenis.start();
+        }
+
+        // --- IMAGES STATE ---
+        let images = [];
+        let imagesLoaded = 0;
+        let isLoaded = false;
+
+        // --- 1. RENDERER ---
+        const renderFrame = (index) => {
+            const img = images[index];
+            if (!img || !img.complete || img.naturalWidth === 0) return;
+            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+            const x = (canvas.width / 2) - (img.width / 2) * scale;
+            const y = (canvas.height / 2) - (img.height / 2) * scale;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        };
+
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (isLoaded && images.length > 0) {
+                const scrollTop = window.scrollY;
+                const trackHeight = heroTrack.clientHeight - window.innerHeight;
+                const progress = Math.max(0, Math.min(1, scrollTop / trackHeight));
+                const frameIndex = Math.min(frameCount - 1, Math.floor(progress * (frameCount - 1)));
+                renderFrame(frameIndex);
+            }
+        };
+        window.addEventListener('resize', resizeCanvas);
+
+        // --- 2. PRELOADER ---
+        const preloadImages = () => {
+            for (let i = 0; i < frameCount; i++) {
+                const img = new Image();
+                img.src = `sequence/frame_${i.toString().padStart(3, "0")}.png`;
+                img.onload = () => {
+                    imagesLoaded++;
+                    const percent = (imagesLoaded / frameCount) * 100;
+                    loadProgress.style.width = percent + '%';
+
+                    if (imagesLoaded === frameCount) {
+                        isLoaded = true;
+                        setTimeout(() => {
+                            loadingScreen.classList.add('opacity-0', 'pointer-events-none');
+                            renderFrame(0);
+                            document.getElementById('text-1').classList.add('visible');
+                        }, 800);
+                    }
+                };
+                images.push(img);
+            }
+        };
+
+        // --- 3. SCROLL LOGIC ---
+        const updateScroll = (scrollTop) => {
+            if (!isLoaded) return;
+            const trackHeight = heroTrack.clientHeight - window.innerHeight;
+            const progress = Math.max(0, Math.min(1, scrollTop / trackHeight));
+
+            if (scrollTop > 10) {
+                heroAurora.style.opacity = '0';
+                document.getElementById('text-1').classList.remove('animate-float');
+            } else {
+                heroAurora.style.opacity = '1';
+                document.getElementById('text-1').classList.add('animate-float');
+            }
+
+            const frameIndex = Math.min(frameCount - 1, Math.floor(progress * (frameCount - 1)));
+            renderFrame(frameIndex);
+
+            // Text Animations
+            const totalTexts = textElements.length;
+            const slots = 1 / totalTexts;
+
+            textElements.forEach((el, index) => {
+                const start = (index * slots) - 0.05;
+                const end = start + slots;
+                if (progress >= start && progress <= end) el.classList.add('visible');
+                else el.classList.remove('visible');
+            });
+
+            // Sticky Nav Background
+            const nav = document.getElementById('navbar');
+            if (scrollTop > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+
+            checkReveals();
+        };
+
+        // --- 4. REVEALS & ACTIVE STATE ---
+        const revealSections = document.querySelectorAll('.reveal-section');
+        const checkReveals = () => {
+            const triggerBottom = window.innerHeight * 0.85;
+            revealSections.forEach(sec => {
+                const top = sec.getBoundingClientRect().top;
+                if (top < triggerBottom) sec.classList.add('active');
+            });
+
+            // Active Nav Link
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove("active");
+                if (link.getAttribute("href").includes(current)) {
+                    link.classList.add("active");
+                }
+            });
+        }
+
+        // --- 5. MOBILE MENU ---
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('open');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            updateScroll(window.scrollY);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+        preloadImages();
+        resizeCanvas();
+    </script>
+</body>
+
+</html>
