@@ -386,18 +386,21 @@
         .text-gradient-blue {
             background: linear-gradient(135deg, #fff 30%, #4CA9FF 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .text-gradient-purple {
             background: linear-gradient(135deg, #fff 30%, #A663CC 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .text-gradient-gold {
             background: linear-gradient(135deg, #fff 30%, #FFD700 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -443,10 +446,68 @@
             cursor: pointer;
         }
 
+        /* Shine Effect */
+        .bento-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: skewX(-25deg);
+            transition: 0.5s;
+            pointer-events: none;
+        }
+
+        .bento-item:hover::after {
+            animation: shine 1s;
+        }
+
+        @keyframes shine {
+            100% {
+                left: 150%;
+            }
+        }
+
         .bento-item:hover {
             transform: translateY(-10px) scale(1.02);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.7),
+                0 0 20px rgba(124, 58, 237, 0.3);
+            /* Purple glow */
+        }
+
+        .bento-item:hover .bento-content {
+            transform: translateY(-5px);
+        }
+
+        /* Inner Image Zoom - Synchronized Transition */
+        .bento-item div[class*="bg-[url"] {
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            /* MATCH PARENT EXACTLY */
+        }
+
+        .bento-item:hover div[class*="bg-[url"] {
+            transform: scale(1.1);
+        }
+
+        /* Inner Image Zoom */
+        .bento-item:hover div[class*="bg-[url"] {
+            transform: scale(1.1);
+        }
+
+        /* Gallery Item Hover Animation */
+        .gallery-item img,
+        .gallery-item video {
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .gallery-wrapper:hover .gallery-item img,
+        .gallery-wrapper:hover .gallery-item video {
+            transform: scale(1.05);
+            /* Zoom effect */
         }
 
         .reveal-section {
@@ -514,7 +575,7 @@
         }
 
         .project-hero {
-            height: 70vh;
+            height: 60vh;
             width: 100%;
             position: relative;
             background-size: cover;
@@ -559,7 +620,8 @@
         }
 
         .project-content-body {
-            max-width: 900px;
+            max-width: 1400px;
+            /* Increased from 900px */
             margin: 0 auto;
             padding: 4rem 2rem 8rem 2rem;
             color: #a3a3a3;
@@ -613,6 +675,57 @@
 
         .delay-300 {
             animation-delay: 0.3s;
+        }
+
+        /* --- New Gallery Styles --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            width: 100%;
+        }
+
+        @media(min-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(min-width: 1280px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+                /* 3 columns on large screens */
+            }
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            aspect-ratio: 16/9;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03) translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .gallery-item video,
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover video,
+        .gallery-item:hover img {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -781,101 +894,111 @@
 
             <div class="bento-grid">
                 <!-- Project 1 -->
-                <div class="bento-item col-span-2 row-span-2 group cursor-pointer" onclick="openProject('valuation')">
+                <!-- Project 1: Admin Portal -->
+                <div class="bento-item col-span-1 md:col-span-2 row-span-2 group cursor-pointer"
+                    onclick="openProject('admin-portal')">
                     <div
-                        class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black group-hover:scale-105 transition-transform duration-700">
+                        class="absolute inset-0 bg-gradient-to-br from-blue-900 to-black group-hover:scale-105 transition-transform duration-700">
                     </div>
-                    <!-- Abstract UI -->
                     <div
-                        class="absolute top-10 left-10 right-10 bottom-0 bg-neutral-900 rounded-t-xl border border-gray-700 shadow-2xl overflow-hidden opacity-90 transition-transform group-hover:-translate-y-4 duration-500">
-                        <div class="w-full h-8 bg-black flex items-center px-4 gap-2 border-b border-gray-800">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                        <div class="p-6 grid grid-cols-3 gap-4">
-                            <div class="h-40 bg-gray-800/50 rounded animate-pulse"></div>
-                            <div class="h-40 bg-gray-800/50 rounded animate-pulse delay-75"></div>
-                            <div class="h-40 bg-gray-800/50 rounded animate-pulse delay-150"></div>
-                        </div>
+                        class="absolute inset-0 opacity-40 bg-[url('assets/projects/admin-portal/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
                     </div>
-
                     <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
                         <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
                             <div class="flex items-center gap-3 mb-4">
                                 <span
-                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Apps
-                                    Script</span>
+                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Admin
+                                    Panel</span>
                                 <span
-                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Automation</span>
+                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Dashboard</span>
                             </div>
-                            <h4 class="text-4xl font-bold mb-3 leading-tight">Property Valuation<br>Automation</h4>
-                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors max-w-md">
-                                Enterprise-grade reporting system reducing manual work by 60%.</p>
-                        </div>
-
-                        <div
-                            class="mt-8 flex items-center gap-2 text-accent-blue font-medium tracking-wide uppercase text-sm opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                            <span>Read Case Study</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
+                            <h4 class="text-3xl font-bold mb-3">Admin Portal v1</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Comprehensive
+                                administration system for managing data and users.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 2 -->
-                <div class="bento-item col-span-1 row-span-2 group cursor-pointer" onclick="openProject('dashboards')">
+                <!-- Project 2: Attendance System -->
+                <div class="bento-item col-span-1 row-span-2 group cursor-pointer"
+                    onclick="openProject('attendance-system')">
                     <div
-                        class="absolute inset-0 bg-gradient-to-b from-slate-900 to-black group-hover:scale-105 transition-transform duration-700">
+                        class="absolute inset-0 bg-gradient-to-b from-purple-900 to-black group-hover:scale-105 transition-transform duration-700">
                     </div>
                     <div
-                        class="absolute inset-0 flex items-center justify-center opacity-10 font-bold text-[12rem] text-white select-none">
-                        01</div>
+                        class="absolute inset-0 opacity-30 bg-[url('assets/projects/attendance-system/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-50">
+                    </div>
                     <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
                         <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
                             <span
-                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">Analytics</span>
-                            <h4 class="text-3xl font-bold mb-3">Admin Dashboards</h4>
-                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Real-time
-                                tracking for team performance.</p>
-                        </div>
-                        <div
-                            class="mt-6 flex items-center gap-2 text-accent-blue font-medium tracking-wide uppercase text-sm opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                            <span>Explore</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
+                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">System</span>
+                            <h4 class="text-3xl font-bold mb-3">Attendance Portal</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Automated
+                                attendance tracking solution.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 3 -->
+                <!-- Project 3: Blender 3D -->
                 <div class="bento-item col-span-1 md:col-span-3 h-[300px] group cursor-pointer"
-                    onclick="openProject('creative')">
+                    onclick="openProject('blender-3d')">
                     <div
-                        class="absolute inset-0 bg-gradient-to-r from-purple-900 to-black group-hover:scale-105 transition-transform duration-700">
+                        class="absolute inset-0 bg-gradient-to-r from-orange-900 to-black group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div
+                        class="absolute inset-0 opacity-40 bg-[url('assets/projects/blender-3d/HDRENDER.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
                     </div>
                     <div class="bento-content p-8 flex justify-between items-end relative z-20 h-full">
                         <div class="transform group-hover:-translate-x-2 transition-transform duration-500">
-                            <span
-                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">Visual
-                                Arts</span>
-                            <h4 class="text-4xl font-bold mb-2">3D & Creative Portfolio</h4>
-                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Blender,
-                                AutoCAD & VFX Compositions.</p>
+                            <div class="flex items-center gap-3 mb-4">
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">3D
+                                    Design</span>
+                                <span
+                                    class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md">Blender</span>
+                            </div>
+                            <h4 class="text-4xl font-bold mb-2">Blender 3D Projects</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">High-fidelity
+                                3D renders and animations.</p>
                         </div>
-                        <div
-                            class="hidden md:flex w-16 h-16 rounded-full border border-white/20 items-center justify-center bg-white/5 backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all duration-300">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="7" y1="17" x2="17" y2="7"></line>
-                                <polyline points="7 7 17 7 17 17"></polyline>
-                            </svg>
+                    </div>
+                </div>
+
+                <!-- Project 4: After Effects -->
+                <div class="bento-item col-span-1 md:col-span-1 h-[300px] group cursor-pointer"
+                    onclick="openProject('after-effects')">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-bl from-red-900 to-black group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
+                        <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">Motion
+                                Graphics</span>
+                            <h4 class="text-2xl font-bold mb-3">After Effects</h4>
+                            <p class="text-gray-400 text-sm group-hover:text-gray-200 transition-colors">Visual effects
+                                and motion design.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: Admin Portal 2 -->
+                <div class="bento-item col-span-1 md:col-span-2 h-[300px] group cursor-pointer"
+                    onclick="openProject('admin-portal-2')">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-teal-900 to-black group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div
+                        class="absolute inset-0 opacity-40 bg-[url('assets/projects/admin-portal-2/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
+                    </div>
+                    <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
+                        <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
+                            <span
+                                class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] tracking-widest text-white uppercase backdrop-blur-md mb-4 inline-block">Web
+                                App</span>
+                            <h4 class="text-3xl font-bold mb-3">Admin Portal 2.0</h4>
+                            <p class="text-gray-400 text-lg group-hover:text-gray-200 transition-colors">Advanced
+                                dashboard with enhanced analytics.</p>
                         </div>
                     </div>
                 </div>
@@ -973,73 +1096,90 @@
 
         // --- PROJECT DATA & OVERLAY ---
         const projects = {
-            'valuation': {
-                title: 'Property Valuation Automation',
-                category: 'Google Apps Script / Automation',
-                image: 'linear-gradient(to bottom, #111, #000)',
-                content: `
-                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">The Challenge</h2>
-                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">AKS Valuers faced a critical bottleneck: manual report generation for property valuations was consuming 60% of their operational time. Errors were frequent, and turnaround times were high.</p>
-                    
-                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up delay-200">The Solution</h2>
-                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-300">I architected a completely automated pipeline using Google Apps Script. 
-                    <br><br>
-                    <strong class="text-white">1. Input:</strong> Field agents submit data via a custom Google Form.<br>
-                    <strong class="text-white">2. Processing:</strong> A script instantly validates input, pulls comparable market data, and calculates valuation estimates.<br>
-                    <strong class="text-white">3. Output:</strong> A PDF report is auto-generated and emailed to the manager for final sign-off.</p>
-
-                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up delay-200">Impact</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-up delay-300">
-                        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
-                            <h3 class="text-3xl font-bold text-accent-green mb-2">60%</h3>
-                            <p class="text-sm text-gray-400 uppercase tracking-widest">Reduction in manual entry</p>
-                        </div>
-                        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
-                            <h3 class="text-3xl font-bold text-blue-400 mb-2">0%</h3>
-                            <p class="text-sm text-gray-400 uppercase tracking-widest">Calculation Errors</p>
-                        </div>
-                        <div class="p-6 rounded-xl bg-white/5 border border-white/10">
-                            <h3 class="text-3xl font-bold text-purple-400 mb-2">2x</h3>
-                            <p class="text-sm text-gray-400 uppercase tracking-widest">Faster Delivery</p>
-                        </div>
-                    </div>
-                `
+            'admin-portal': {
+                title: 'Admin Portal',
+                category: 'Business Dashboard',
+                image: 'url("assets/projects/admin-portal/image.png")',
+                description: 'A powerful business dashboard that simplifies how companies manage their data. Instead of wasting hours on spreadsheets, this system puts everything in one place—giving business owners clear visibility into their operations, improving security, and saving valuable time for the entire team.',
+                gallery: [
+                    { type: 'image', src: 'assets/projects/admin-portal/image.png', caption: 'Simple, secure login screen that keeps company data safe.' },
+                    { type: 'image', src: 'assets/projects/admin-portal/image (1).png', caption: 'Main dashboard: See all important business numbers at a glance.' },
+                    { type: 'image', src: 'assets/projects/admin-portal/image (2).png', caption: 'User list: Easily manage staff accounts and permissions.' }
+                ]
             },
-            'dashboards': {
-                title: 'Admin Intelligence Dashboard',
-                category: 'Analytics / Visualization',
-                image: 'linear-gradient(to bottom, #0f172a, #000)',
-                content: `
-                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">Overview</h2>
-                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">To manage a large team of field agents, real-time visibility was essential. I built a centralized dashboard system that provides actionable insights at a glance.</p>
-                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up delay-200">Features</h2>
-                    <ul class="space-y-4 text-xl text-gray-300 fade-up delay-300">
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Live location tracking of field agents</li>
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-500"></span> Performance heatmaps by region</li>
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Automated daily summaries sent to leadership</li>
-                    </ul>
-                `
+            'admin-portal-2': {
+                title: 'Admin Portal 2.0',
+                category: 'Analytics Dashboard',
+                image: 'url("assets/projects/admin-portal-2/image.png")',
+                description: 'An advanced version of the admin system designed for fast decision-making. It turns complex data into easy-to-read charts and graphs, helping managers spot trends instantly. This tool directly helps businesses grow by identifying what is working and what needs attention immediately.',
+                gallery: [
+                    { type: 'image', src: 'assets/projects/admin-portal-2/image.png', caption: 'Growth Chart: Track revenue and users in real-time.' },
+                    { type: 'image', src: 'assets/projects/admin-portal-2/image (1).png', caption: 'Sales Map: See exactly where your customers are coming from.' },
+                    { type: 'image', src: 'assets/projects/admin-portal-2/image (2).png', caption: 'Settings: Connect your favorite apps with one click.' },
+                    { type: 'image', src: 'assets/projects/admin-portal-2/image (3).png', caption: 'Staff Roles: Control who sees sensitive information.' },
+                    { type: 'image', src: 'assets/projects/admin-portal-2/image (4).png', caption: 'Activity Log: Keep track of every action taken in the system.' }
+                ]
             },
-            'creative': {
-                title: '3D & Visual Arts Portfolio',
-                category: 'Creative Design',
-                image: 'linear-gradient(to bottom, #2e1065, #000)',
-                content: `
-                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">Design Philosophy</h2>
-                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">Beyond code, I explore the intersection of geometry and light. Using Blender and AutoCAD, I create architectural visualizations that help stakeholders understand complex spatial modifications.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-up delay-200">
-                        <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative group">
-                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="text-white tracking-widest uppercase text-sm">Interior Render</span>
-                            </div>
-                        </div>
-                        <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative group">
-                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="text-white tracking-widest uppercase text-sm">Exterior Concept</span>
-                            </div>
-                        </div>
-                    </div>
-                `
+            'after-effects': {
+                title: 'After Effects Projects',
+                category: 'Brand Marketing',
+                image: 'linear-gradient(to bottom, #7f1d1d, #000)',
+                description: 'High-energy video content designed to grab attention on social media and marketing channels. In a crowded digital world, these animations help brands stand out, explain their products quickly, and drive more customer engagement and sales.',
+                gallery: [
+                    { type: 'video', src: 'assets/projects/after-effects/02. FINAL COMPOSITION.mp4', caption: 'Dynamic Logo Reveal: Makes your brand unforgettable.' },
+                    { type: 'video', src: 'assets/projects/after-effects/Customize Your Logo Here_1.mp4', caption: 'Commercial Template: Professional intro for business videos.' },
+                    { type: 'video', src: 'assets/projects/after-effects/IMMACULATE vv.mp4', caption: 'Music Visualizer: Engaging content for entertainment brands.' },
+                    { type: 'video', src: 'assets/projects/after-effects/Render.mp4', caption: 'Visual Effects: Adding 3D elements to real footage.' },
+                    { type: 'video', src: 'assets/projects/after-effects/order (1).mp4', caption: 'Product Promo: High-speed showcase to boost sales.' }
+                ]
+            },
+            'attendance-system': {
+                title: 'Attendance System',
+                category: 'Efficiency Tool',
+                image: 'url("assets/projects/attendance-system/image.png")',
+                description: 'An automated system that replaces paper attendance and punch cards. It guarantees accurate payroll by tracking exactly when employees start and finish work. This reduces wage theft, cuts down administrative costs, and lets HR focus on people instead of paperwork.',
+                gallery: [
+                    { type: 'image', src: 'assets/projects/attendance-system/image.png', caption: 'Employee Login: Fast and secure daily check-in.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (1).png', caption: 'Manager View: See who is present or absent instantly.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (2).png', caption: 'Time Logs: Exact records of clock-in and clock-out times.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (3).png', caption: 'Report Generator: Create monthly payroll summaries in seconds.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (4).png', caption: 'Attendance Trends: Visual summary of staff reliability.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (5).png', caption: 'Leave Requests: Simple way to apply for time off.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (6).png', caption: 'Alerts: System highlights late arrivals automatically.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (7).png', caption: 'Shift Planner: Organize monthly work schedules easily.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (8).png', caption: 'Admin Control: Set rules for holidays and work hours.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (1) copy.png', caption: 'Mobile Dashboard: check stats on the go.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image (2) copy.png', caption: 'Mobile History: Employees can see their own records.' },
+                    { type: 'image', src: 'assets/projects/attendance-system/image copy.png', caption: 'Mobile Login: Easy access from any device.' }
+                ]
+            },
+            'blender-3d': {
+                title: 'Blender 3D Projects',
+                category: 'Product Visualization',
+                image: 'url("assets/projects/blender-3d/HDRENDER.png")',
+                description: 'Top-tier 3D visuals that make products look better than real life. Whether for advertising or concept design, these realistic renders help customers understand the product quality before they buy, increasing confidence and sales conversion.',
+                gallery: [
+                    { type: 'image', src: 'assets/projects/blender-3d/HDRENDER.png', caption: 'Product Shot: High-end audio gear that looks tangible.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/DANDD.png', caption: 'Concept Art: Immersive environment for game design.' },
+                    { type: 'video', src: 'assets/projects/blender-3d/FERRARI MAKING EXPORT - Made with Clipchamp.mp4', caption: 'Car Modeling: Showing the complex design process.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/RENDER DONE.jpg', caption: 'Environment Design: Futuristic city concept.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untishjuyqcdresdfdhjhq.png', caption: 'Abstract Art: Modern visuals for tech branding.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untisssstled.png', caption: 'Material Quality: Realistic glass and light effects.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untisstled.png', caption: 'Fluid Quality: Simulating liquids for beverage ads.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untithjhjhled.png', caption: 'Lighting Study: Professional studio look.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untitlXXXSed.png', caption: 'Texture Detail: Realistic metal weathering.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untitleSASASAd.png', caption: 'Terrain Generation: Creating landscapes for film.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untitslddded.png', caption: 'Visual Integration: Placing 3D objects in scenes.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.54 PM.jpeg', caption: 'Character Stylization: Unique avatars for digital platforms.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM.jpeg', caption: 'Game Assets: Optimized models for real-time engines.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM (1).jpeg', caption: 'Scene Composition: Balancing elements in frame.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM (2).jpeg', caption: 'Clay Render: Focusing on pure form and silhouette.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.56 PM.jpeg', caption: 'Wireframe View: Clean geometry for professional use.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.53 PM.jpeg', caption: 'Color Study: Mood setting through palette choice.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.52 PM (2).jpeg', caption: 'Detail Focus: High-resolution closeups.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untitsled.png', caption: 'Abstract Composition: Exploring form and space.' },
+                    { type: 'image', src: 'assets/projects/blender-3d/untitsssled.png', caption: 'Material Study: Glossy surfaces and reflections.' }
+                ]
             }
         };
 
@@ -1048,15 +1188,66 @@
             const overlay = document.getElementById('project-overlay');
             const container = document.getElementById('project-detail-content');
 
+            let galleryHTML = '';
+            if (data.gallery) {
+                galleryHTML = '<div class="gallery-grid fade-up delay-200">';
+                data.gallery.forEach(item => {
+                    const src = item.src;
+                    const type = item.type;
+                    const caption = item.caption || '';
+
+                    if (type === 'video') {
+                        galleryHTML += `
+                            <div class="gallery-wrapper cursor-pointer group" 
+                                 data-src="${src}" 
+                                 data-type="video" 
+                                 data-caption="${caption.replace(/"/g, '&quot;')}"
+                                 onclick="openLightbox(this.dataset.src, this.dataset.type, this.dataset.caption)">
+                                <div class="gallery-item video-item relative overflow-hidden rounded-xl border border-white/10 transition-transform duration-300 group-hover:-translate-y-1">
+                                    <video autoplay muted loop playsinline class="w-full h-full object-cover pointer-events-none">
+                                        <source src="${src}" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                                </div>
+                                <p class="mt-3 text-sm text-gray-400 group-hover:text-white transition-colors border-l-2 border-transparent group-hover:border-purple-500 pl-3">${caption}</p>
+                            </div>
+                        `;
+                    } else {
+                        galleryHTML += `
+                            <div class="gallery-wrapper cursor-pointer group" 
+                                 data-src="${src}" 
+                                 data-type="image" 
+                                 data-caption="${caption.replace(/"/g, '&quot;')}"
+                                 onclick="openLightbox(this.dataset.src, this.dataset.type, this.dataset.caption)">
+                                <div class="gallery-item relative overflow-hidden rounded-xl border border-white/10 transition-transform duration-300 group-hover:-translate-y-1">
+                                    <img src="${src}" alt="${caption}" loading="lazy" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                                </div>
+                                <p class="mt-3 text-sm text-gray-400 group-hover:text-white transition-colors border-l-2 border-transparent group-hover:border-purple-500 pl-3">${caption}</p>
+                            </div>
+                        `;
+                    }
+                });
+                galleryHTML += '</div>';
+            }
+
             container.innerHTML = `
                 <div class="project-hero" style="background-image: ${data.image}">
+                    <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
                     <div class="project-hero-content">
-                        <span class="project-category">${data.category}</span>
-                        <h1 class="project-title">${data.title}</h1>
+                        <span class="project-category fade-up">${data.category}</span>
+                        <h1 class="project-title fade-up delay-100">${data.title}</h1>
+                    </div>
+                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-70">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                        </svg>
                     </div>
                 </div>
                 <div class="project-content-body">
-                    ${data.content}
+                    <h2 class="text-4xl font-bold mb-8 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent fade-up">Project Overview</h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed fade-up delay-100">${data.description}</p>
+                    ${galleryHTML}
                 </div>
             `;
 
@@ -1069,6 +1260,46 @@
             document.getElementById('project-overlay').classList.remove('open');
             document.body.style.overflow = 'auto';
             if (window.lenis && typeof window.lenis.start === 'function') window.lenis.start();
+        }
+
+        // --- LIGHTBOX Logic ---
+        // --- LIGHTBOX Logic ---
+        function openLightbox(src, type, caption) {
+            const lightbox = document.getElementById('lightbox');
+            const content = document.getElementById('lightbox-content');
+
+            lightbox.classList.remove('opacity-0', 'pointer-events-none');
+
+            const captionHTML = caption ? `<div class="absolute bottom-[-4rem] left-0 right-0 text-center text-white/90 text-xl font-medium tracking-wide drop-shadow-md">${caption}</div>` : '';
+
+            if (type === 'video') {
+                content.innerHTML = `
+                    <div class="relative w-full max-w-6xl flex flex-col items-center">
+                        <video controls autoplay class="w-full max-h-[85vh] rounded shadow-2xl bg-black">
+                            <source src="${src}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        ${captionHTML}
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="relative w-full max-w-6xl flex flex-col items-center">
+                        <img src="${src}" class="max-w-full max-h-[85vh] object-contain rounded shadow-2xl" alt="${caption || 'Full view'}">
+                        ${captionHTML}
+                    </div>
+                `;
+            }
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const content = document.getElementById('lightbox-content');
+            lightbox.classList.add('opacity-0', 'pointer-events-none');
+            // Clear content to stop video playback
+            setTimeout(() => {
+                content.innerHTML = '';
+            }, 300);
         }
 
         // --- IMAGES STATE ---
@@ -1123,12 +1354,42 @@
             }
         };
 
-        // --- 3. SCROLL LOGIC ---
-        const updateScroll = (scrollTop) => {
-            if (!isLoaded) return;
-            const trackHeight = heroTrack.clientHeight - window.innerHeight;
-            const progress = Math.max(0, Math.min(1, scrollTop / trackHeight));
+        // --- 3. SMOOTH SCROLL LOGIC (Optimized) ---
+        let scrollProgress = 0;
+        let targetProgress = 0;
 
+        // Main Animation Loop (Decoupled from Scroll)
+        const animateSequence = () => {
+            if (isLoaded) {
+                // Linear Interpolation (LERP) for smoothness
+                // Adjust 0.08 for more/less smoothing (lower = smoother/slower)
+                scrollProgress += (targetProgress - scrollProgress) * 0.08;
+
+                const frameIndex = Math.min(frameCount - 1, Math.floor(scrollProgress * (frameCount - 1)));
+                renderFrame(frameIndex);
+
+                // Text Animations based on SMOOTHED progress
+                const totalTexts = textElements.length;
+                const slots = 1 / totalTexts;
+
+                textElements.forEach((el, index) => {
+                    const start = (index * slots) - 0.05;
+                    const end = start + slots;
+                    // Use scrollProgress instead of raw scrollTop for smoother text reveal
+                    if (scrollProgress >= start && scrollProgress <= end) el.classList.add('visible');
+                    else el.classList.remove('visible');
+                });
+            }
+            requestAnimationFrame(animateSequence);
+        };
+        requestAnimationFrame(animateSequence);
+
+        const updateScroll = (scrollTop) => {
+            // Calculate raw progress based on scroll position
+            const trackHeight = heroTrack.clientHeight - window.innerHeight;
+            targetProgress = Math.max(0, Math.min(1, scrollTop / trackHeight));
+
+            // Immediate UI updates (Nav/Aurora) can stay responsive
             if (scrollTop > 10) {
                 heroAurora.style.opacity = '0';
                 document.getElementById('text-1').classList.remove('animate-float');
@@ -1136,20 +1397,6 @@
                 heroAurora.style.opacity = '1';
                 document.getElementById('text-1').classList.add('animate-float');
             }
-
-            const frameIndex = Math.min(frameCount - 1, Math.floor(progress * (frameCount - 1)));
-            renderFrame(frameIndex);
-
-            // Text Animations
-            const totalTexts = textElements.length;
-            const slots = 1 / totalTexts;
-
-            textElements.forEach((el, index) => {
-                const start = (index * slots) - 0.05;
-                const end = start + slots;
-                if (progress >= start && progress <= end) el.classList.add('visible');
-                else el.classList.remove('visible');
-            });
 
             // Sticky Nav Background
             const nav = document.getElementById('navbar');
@@ -1212,6 +1459,21 @@
         preloadImages();
         resizeCanvas();
     </script>
+    <!-- Lightbox Container -->
+    <div id="lightbox" style="z-index: 10000;"
+        class="fixed inset-0 bg-black/95 opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+        <button onclick="closeLightbox()"
+            class="absolute top-4 right-4 text-white hover:text-gray-300 z-[110] bg-white/10 p-2 rounded-full backdrop-blur-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div id="lightbox-content" class="w-full max-w-7xl max-h-[90vh] relative flex items-center justify-center">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
 </body>
 
 </html>
