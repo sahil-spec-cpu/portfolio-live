@@ -435,6 +435,25 @@
             }
         }
 
+        /* Custom 'Live' Animations */
+        @keyframes pulse-slow {
+
+            0%,
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+            }
+
+            50% {
+                opacity: 0.8;
+                text-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+            }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s ease-in-out infinite;
+        }
+
         .bento-item {
             position: relative;
             background: rgba(20, 20, 20, 0.6);
@@ -493,10 +512,7 @@
             transform: scale(1.1);
         }
 
-        /* Inner Image Zoom */
-        .bento-item:hover div[class*="bg-[url"] {
-            transform: scale(1.1);
-        }
+
 
         /* Gallery Item Hover Animation */
         .gallery-item img,
