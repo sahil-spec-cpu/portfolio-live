@@ -986,103 +986,190 @@
 
         /* === HORIZONTAL SCROLL JOURNEY === */
         .journey-scroll-section {
-            --card-size: clamp(320px, 35vw, 400px);
-            --card-ar: 3 / 2;
-            --radius: 20;
+            --card-size: clamp(350px, 40vw, 450px);
+            --card-ar: 2 / 1;
+            --radius: 14;
             --border: 2;
-            --backdrop: rgba(15, 15, 20, 0.9);
+            --backdrop: rgba(10, 10, 15, 0.95);
+            --base: 270;
             position: relative;
-            height: 300vh;
-            background: linear-gradient(180deg, #050505 0%, #0a0a12 50%, #050505 100%);
-        }
-
-        .journey-sticky-container {
-            position: sticky;
-            top: 0;
-            height: 100vh;
+            width: 100vw;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(180deg, #050505 0%, #0a0a0f 50%, #050505 100%);
+            padding: 4rem 0;
             overflow: hidden;
-            padding: 2rem;
+        }
+
+        .journey-scroll-section::before,
+        .journey-scroll-section::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background: radial-gradient(hsl(var(--base, 270) 80% 50%), transparent);
+            filter: blur(100px);
+            width: calc(var(--card-size) * 1.5);
+            aspect-ratio: 1;
+            translate: -50% -50%;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+            transition: --base 0.3s ease;
+        }
+
+        .journey-scroll-section::after {
+            width: calc(var(--card-size) * 0.5);
+            opacity: 0.25;
+            z-index: 2;
+            translate: -50% -75%;
         }
 
         .journey-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             z-index: 10;
+            padding: 0 2rem;
         }
 
-        .journey-cards-wrapper {
-            width: 100%;
-            overflow: hidden;
-            mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
-            -webkit-mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
-        }
-
-        .journey-cards-track {
+        .journey-cards-list {
             display: flex;
-            gap: 2rem;
-            padding: 2rem 0;
-            will-change: transform;
+            gap: 3rem;
+            margin: 0;
+            padding-block: 2rem;
+            padding-inline: calc(50vw - (var(--card-size) * 0.5));
+            mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+            -webkit-mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            width: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(166, 99, 204, 0.5) rgba(255, 255, 255, 0.1);
         }
 
-        .journey-card {
-            flex-shrink: 0;
-            width: var(--card-size);
-            aspect-ratio: var(--card-ar);
-            border-radius: calc(var(--radius) * 1px);
-            background: var(--backdrop);
-            border: calc(var(--border) * 1px) solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
+        .journey-cards-list::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .journey-cards-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 0 20%;
+        }
+
+        .journey-cards-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, rgba(166, 99, 204, 0.6), rgba(76, 169, 255, 0.6));
+            border-radius: 10px;
+        }
+
+        .journey-cards-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, rgba(166, 99, 204, 0.8), rgba(76, 169, 255, 0.8));
+        }
+
+        .journey-card-item {
             display: grid;
-            grid-template-rows: auto 1fr auto;
-            padding: 1.5rem;
-            gap: 1rem;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            backdrop-filter: blur(20px);
+            place-items: center;
+            scroll-snap-align: center;
+            position: relative;
+            flex-shrink: 0;
         }
 
-        .journey-card::before {
-            content: '';
+        /* Border glow effect on list items */
+        .journey-card-item::after {
+            content: "";
             position: absolute;
-            inset: 0;
+            inset: -2px;
+            background-image: radial-gradient(80px 80px at var(--px, 50%) var(--py, 50%),
+                    hsl(0 0% 100% / 0.8), transparent);
+            background-color: transparent;
+            border: 2px solid transparent;
             border-radius: calc(var(--radius) * 1px);
-            background: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                    rgba(166, 99, 204, 0.15) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+            mask-clip: padding-box, border-box;
+            mask-composite: intersect;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .journey-card:hover::before {
+        .journey-card-item:hover::after {
             opacity: 1;
         }
 
+        .journey-card {
+            aspect-ratio: var(--card-ar);
+            border-radius: calc(var(--radius) * 1px);
+            display: grid;
+            gap: 0.75rem;
+            grid-template: auto 1fr auto auto / 1fr auto;
+            padding: 1.5rem;
+            position: relative;
+            width: var(--card-size);
+            background-image: radial-gradient(calc(var(--card-size) * 1.2) calc(var(--card-size) * 1.2) at var(--px, 50%) var(--py, 50%),
+                    hsl(var(--hue, 270) calc(var(--sat, 0) * 1%) 50% / 0.15), transparent);
+            background-color: var(--backdrop);
+            border: calc(var(--border) * 1px) solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s ease, --sat 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .journey-card::before,
+        .journey-card::after {
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            inset: calc(var(--border) * -1px);
+            border: calc(var(--border) * 1px) solid transparent;
+            border-radius: calc(var(--radius) * 1px);
+            background-attachment: fixed;
+            background-size: calc(100% + 4px) calc(100% + 4px);
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+            mask-clip: padding-box, border-box;
+            mask-composite: intersect;
+        }
+
+        .journey-card::before {
+            background-image: radial-gradient(calc(var(--card-size) * 0.75) calc(var(--card-size) * 0.75) at var(--px, 50%) var(--py, 50%),
+                    hsl(var(--hue, 270) calc(var(--sat, 0) * 1%) 50% / 0.8), transparent 100%);
+            filter: brightness(2);
+        }
+
+        .journey-card::after {
+            background-image: radial-gradient(calc(var(--card-size) * 0.4) calc(var(--card-size) * 0.4) at var(--px, 50%) var(--py, 50%),
+                    hsl(0 100% 100% / 0.8), transparent 100%);
+        }
+
         .journey-card:hover {
-            border-color: rgba(166, 99, 204, 0.5);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
-                0 0 40px rgba(166, 99, 204, 0.2);
+            --sat: 80;
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
         .journey-card-header {
-            display: flex;
+            display: grid;
+            gap: 0 1rem;
+            grid-column: 1 / -1;
+            grid-template: 1fr 1fr / auto 1fr;
             align-items: center;
-            gap: 1rem;
         }
 
         .journey-logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            width: 48px;
+            height: 48px;
+            grid-row: span 2;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -1090,147 +1177,127 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 8px;
+            padding: 6px;
         }
 
         .journey-logo svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
+            color: hsl(var(--hue, 270) 70% 60%);
         }
 
         .journey-card-title h3 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 700;
             margin: 0;
             color: white;
         }
 
         .journey-card-title span {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.5);
             font-weight: 400;
         }
 
-        .journey-card-content {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .journey-card-content p {
-            margin: 0;
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.5;
-        }
-
         .journey-card hr {
+            grid-column: 1 / -1;
             border: none;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
             margin: 0;
+            width: 100%;
         }
 
-        .journey-card-footer {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        .journey-card-role {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
         }
 
-        .journey-badge {
-            padding: 0.35rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.7rem;
+        .journey-card-achievement {
             font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            border: 1px solid;
+            color: hsl(var(--hue, 270) 70% 70%);
+            font-size: 0.9rem;
+            text-align: right;
         }
 
-        .journey-badge.purple {
-            background: rgba(166, 99, 204, 0.15);
-            border-color: rgba(166, 99, 204, 0.4);
-            color: #c084fc;
+        /* Card color variations */
+        .journey-card-item[data-color="purple"] .journey-card {
+            --hue: 270;
         }
 
-        .journey-badge.blue {
-            background: rgba(76, 169, 255, 0.15);
-            border-color: rgba(76, 169, 255, 0.4);
-            color: #4CA9FF;
+        .journey-card-item[data-color="pink"] .journey-card {
+            --hue: 330;
         }
 
-        .journey-badge.green {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: rgba(34, 197, 94, 0.4);
-            color: #22c55e;
+        .journey-card-item[data-color="blue"] .journey-card {
+            --hue: 210;
         }
 
-        .journey-badge.pink {
-            background: rgba(236, 72, 153, 0.15);
-            border-color: rgba(236, 72, 153, 0.4);
-            color: #ec4899;
+        .journey-card-item[data-color="green"] .journey-card {
+            --hue: 145;
         }
 
-        .journey-badge.current {
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+        /* Scroll-driven color animation */
+        @supports (animation-timeline: scroll()) {
+            @property --base {
+                inherits: true;
+                syntax: '<number>';
+                initial-value: 270;
             }
 
-            50% {
-                box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+            @property --sat {
+                inherits: true;
+                syntax: '<number>';
+                initial-value: 0;
             }
-        }
 
-        .journey-progress {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.5rem;
-            z-index: 10;
-        }
+            @keyframes change-accent {
+                0% {
+                    --base: 270;
+                }
 
-        .journey-progress-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
+                33% {
+                    --base: 330;
+                }
 
-        .journey-progress-dot.active {
-            background: #A663CC;
-            box-shadow: 0 0 10px rgba(166, 99, 204, 0.6);
-        }
+                66% {
+                    --base: 210;
+                }
 
-        /* Ambient glow for journey section */
-        .journey-scroll-section::before,
-        .journey-scroll-section::after {
-            content: '';
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(166, 99, 204, 0.15), transparent);
-            filter: blur(80px);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: 0;
-        }
+                100% {
+                    --base: 145;
+                }
+            }
 
-        .journey-scroll-section.in-view::before {
-            opacity: 1;
+            @keyframes saturate {
+
+                0%,
+                25%,
+                75%,
+                100% {
+                    --sat: 0;
+                }
+
+                50% {
+                    --sat: 100;
+                }
+            }
+
+            .journey-scroll-section {
+                timeline-scope: --journey-list;
+                animation: change-accent both linear;
+                animation-timeline: --journey-list;
+            }
+
+            .journey-cards-list {
+                scroll-timeline: --journey-list inline;
+            }
+
+            .journey-card-item {
+                animation: saturate both linear;
+                animation-timeline: view(inline);
+            }
         }
     </style>
 </head>
@@ -1489,138 +1556,99 @@
 
         <!-- My Journey Section - Horizontal Scroll -->
         <section id="journey" class="journey-scroll-section">
-            <div class="journey-sticky-container">
-                <!-- Header -->
-                <div class="journey-header">
-                    <p class="text-base font-medium tracking-[0.4em] uppercase text-purple-400 mb-4">Career Path</p>
-                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter">
-                        MY <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">JOURNEY</span>
-                    </h2>
-                </div>
-
-                <!-- Scrolling Cards -->
-                <div class="journey-cards-wrapper">
-                    <div class="journey-cards-track" id="journey-track">
-
-                        <!-- Card 1: Delhi University -->
-                        <article class="journey-card" data-glow>
-                            <div class="journey-card-header">
-                                <div class="journey-logo"
-                                    style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                        stroke="#A663CC" stroke-width="1.5">
-                                        <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                                        <path
-                                            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                                    </svg>
-                                </div>
-                                <div class="journey-card-title">
-                                    <h3>Delhi University</h3>
-                                    <span>2022 - 2025</span>
-                                </div>
-                            </div>
-                            <div class="journey-card-content">
-                                <p>Bachelor of Arts from one of India's most prestigious universities. Built the
-                                    foundation for analytical thinking and creative problem-solving.</p>
-                            </div>
-                            <hr>
-                            <div class="journey-card-footer">
-                                <span class="journey-badge purple">Education</span>
-                                <span class="journey-badge purple">BA Graduate</span>
-                            </div>
-                        </article>
-
-                        <!-- Card 2: PUMA -->
-                        <article class="journey-card" data-glow>
-                            <div class="journey-card-header">
-                                <div class="journey-logo" style="background: #000;">
-                                    <img src="https://logos-world.net/wp-content/uploads/2020/04/Puma-Logo.png"
-                                        alt="PUMA Logo">
-                                </div>
-                                <div class="journey-card-title">
-                                    <h3>PUMA</h3>
-                                    <span>2021 - 2023</span>
-                                </div>
-                            </div>
-                            <div class="journey-card-content">
-                                <p>Floor Manager leading retail operations and team coordination. Recognized for
-                                    exceptional performance with 7× awards for sales and leadership.</p>
-                            </div>
-                            <hr>
-                            <div class="journey-card-footer">
-                                <span class="journey-badge pink">Floor Manager</span>
-                                <span class="journey-badge pink">7× Award Winner</span>
-                            </div>
-                        </article>
-
-                        <!-- Card 3: AKS Valuers -->
-                        <article class="journey-card" data-glow>
-                            <div class="journey-card-header">
-                                <div class="journey-logo"
-                                    style="background: linear-gradient(135deg, #0f172a, #1e293b);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                        stroke="#4CA9FF" stroke-width="1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
-                                    </svg>
-                                </div>
-                                <div class="journey-card-title">
-                                    <h3>AKS Valuers</h3>
-                                    <span>2023 - Present</span>
-                                </div>
-                            </div>
-                            <div class="journey-card-content">
-                                <p>IT & Business Manager architecting automation systems and digital infrastructure.
-                                    Earned "Innovation IT Architect" certification for transformative solutions.</p>
-                            </div>
-                            <hr>
-                            <div class="journey-card-footer">
-                                <span class="journey-badge blue">IT Manager</span>
-                                <span class="journey-badge blue">IT Architect Certified</span>
-                            </div>
-                        </article>
-
-                        <!-- Card 4: Formulaic Engineers (Current) -->
-                        <article class="journey-card" data-glow>
-                            <div class="journey-card-header">
-                                <div class="journey-logo"
-                                    style="background: linear-gradient(135deg, #052e16, #14532d);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                        stroke="#22c55e" stroke-width="1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
-                                    </svg>
-                                </div>
-                                <div class="journey-card-title">
-                                    <h3>Formulaic Engineers</h3>
-                                    <span>Present</span>
-                                </div>
-                            </div>
-                            <div class="journey-card-content">
-                                <p>Manager Automation & IT, building PAN India systems spanning 80+ offices. Leading
-                                    digital transformation through custom automation solutions.</p>
-                            </div>
-                            <hr>
-                            <div class="journey-card-footer">
-                                <span class="journey-badge green current">Current Role</span>
-                                <span class="journey-badge green">80+ Offices</span>
-                            </div>
-                        </article>
-
-                    </div>
-                </div>
-
-                <!-- Progress Dots -->
-                <div class="journey-progress">
-                    <div class="journey-progress-dot active"></div>
-                    <div class="journey-progress-dot"></div>
-                    <div class="journey-progress-dot"></div>
-                    <div class="journey-progress-dot"></div>
-                </div>
+            <!-- Header -->
+            <div class="journey-header">
+                <p class="text-base font-medium tracking-[0.4em] uppercase text-purple-400 mb-4">Career Path</p>
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter">
+                    MY <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">JOURNEY</span>
+                </h2>
             </div>
+
+            <!-- Scrolling Cards List -->
+            <ul class="journey-cards-list" id="journey-list">
+
+                <!-- Card 1: Delhi University -->
+                <li class="journey-card-item" data-color="purple">
+                    <article class="journey-card">
+                        <div class="journey-card-header">
+                            <div class="journey-logo" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                                    <path
+                                        d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                                </svg>
+                            </div>
+                            <h3>Delhi University</h3>
+                            <span>2022 - 2025</span>
+                        </div>
+                        <hr>
+                        <span class="journey-card-role">Bachelor of Arts</span>
+                        <span class="journey-card-achievement">BA Graduate</span>
+                    </article>
+                </li>
+
+                <!-- Card 2: PUMA -->
+                <li class="journey-card-item" data-color="pink">
+                    <article class="journey-card">
+                        <div class="journey-card-header">
+                            <div class="journey-logo" style="background: #000;">
+                                <img src="https://logos-world.net/wp-content/uploads/2020/04/Puma-Logo.png"
+                                    alt="PUMA Logo">
+                            </div>
+                            <h3>PUMA</h3>
+                            <span>2021 - 2023</span>
+                        </div>
+                        <hr>
+                        <span class="journey-card-role">Floor Manager</span>
+                        <span class="journey-card-achievement">7× Award Winner</span>
+                    </article>
+                </li>
+
+                <!-- Card 3: AKS Valuers -->
+                <li class="journey-card-item" data-color="blue">
+                    <article class="journey-card">
+                        <div class="journey-card-header">
+                            <div class="journey-logo" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                                </svg>
+                            </div>
+                            <h3>AKS Valuers</h3>
+                            <span>2023 - Present</span>
+                        </div>
+                        <hr>
+                        <span class="journey-card-role">IT & Business Manager</span>
+                        <span class="journey-card-achievement">IT Architect Certified</span>
+                    </article>
+                </li>
+
+                <!-- Card 4: Formulaic Engineers (Current) -->
+                <li class="journey-card-item" data-color="green">
+                    <article class="journey-card">
+                        <div class="journey-card-header">
+                            <div class="journey-logo" style="background: linear-gradient(135deg, #052e16, #14532d);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                                </svg>
+                            </div>
+                            <h3>Formulaic Engineers</h3>
+                            <span>Present</span>
+                        </div>
+                        <hr>
+                        <span class="journey-card-role">Manager Automation & IT</span>
+                        <span class="journey-card-achievement">80+ Offices PAN India</span>
+                    </article>
+                </li>
+
+            </ul>
         </section>
 
         <!-- Bento Grid Projects -->
@@ -2363,63 +2391,65 @@
             }, 800); // Start after loading animation
         });
 
-        // --- HORIZONTAL SCROLL JOURNEY ANIMATION ---
-        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-            const journeySection = document.querySelector('.journey-scroll-section');
-            const journeyTrack = document.getElementById('journey-track');
+        // --- JOURNEY SECTION EFFECTS ---
+        (function () {
+            const journeyList = document.getElementById('journey-list');
             const journeyCards = document.querySelectorAll('.journey-card');
-            const progressDots = document.querySelectorAll('.journey-progress-dot');
+            const journeyItems = document.querySelectorAll('.journey-card-item');
+            const journeySection = document.querySelector('.journey-scroll-section');
 
-            if (journeySection && journeyTrack && journeyCards.length > 0) {
-                // Calculate the total scroll distance needed
-                const getScrollAmount = () => {
-                    const trackWidth = journeyTrack.scrollWidth;
-                    const viewportWidth = window.innerWidth;
-                    return -(trackWidth - viewportWidth + 100);
-                };
+            if (!journeyList || !journeyCards.length) return;
 
-                // Create the horizontal scroll animation
-                gsap.to(journeyTrack, {
-                    x: getScrollAmount,
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: journeySection,
-                        start: "top top",
-                        end: () => `+=${journeyTrack.scrollWidth}`,
-                        pin: true,
-                        scrub: 1.5,
-                        invalidateOnRefresh: true,
-                        onUpdate: (self) => {
-                            // Update progress dots
-                            const progress = self.progress;
-                            const activeIndex = Math.floor(progress * journeyCards.length);
-                            progressDots.forEach((dot, i) => {
-                                dot.classList.toggle('active', i <= activeIndex);
-                            });
+            // Mouse pointer tracking for glow effect
+            const syncPointer = (e) => {
+                document.documentElement.style.setProperty('--px', e.clientX.toFixed(2) + 'px');
+                document.documentElement.style.setProperty('--py', e.clientY.toFixed(2) + 'px');
+            };
+            document.body.addEventListener('pointermove', syncPointer);
 
-                            // Toggle ambient glow
-                            journeySection.classList.toggle('in-view', progress > 0.05 && progress < 0.95);
-                        }
-                    }
+            // Per-card mouse tracking for individual glow
+            journeyCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--px', `${x}px`);
+                    card.style.setProperty('--py', `${y}px`);
+                });
+            });
+
+            // GSAP fallback for browsers without scroll-driven animations
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !CSS.supports('animation-timeline: scroll()')) {
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Color change based on scroll position
+                journeyList.addEventListener('scroll', () => {
+                    const scrollLeft = journeyList.scrollLeft;
+                    const maxScroll = journeyList.scrollWidth - journeyList.clientWidth;
+                    const progress = scrollLeft / maxScroll;
+
+                    // Interpolate hue from purple (270) to green (145)
+                    const hue = 270 + (progress * (145 - 270));
+                    journeySection.style.setProperty('--base', hue);
                 });
 
-                // Recalculate on window resize
-                window.addEventListener('resize', () => {
-                    ScrollTrigger.refresh();
-                });
-
-                // Mouse glow effect on cards
-                journeyCards.forEach(card => {
-                    card.addEventListener('mousemove', (e) => {
-                        const rect = card.getBoundingClientRect();
-                        const x = ((e.clientX - rect.left) / rect.width) * 100;
-                        const y = ((e.clientY - rect.top) / rect.height) * 100;
-                        card.style.setProperty('--mouse-x', `${x}%`);
-                        card.style.setProperty('--mouse-y', `${y}%`);
+                // Saturation animation for visible cards
+                journeyItems.forEach((item) => {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            const card = entry.target.querySelector('.journey-card');
+                            if (card) {
+                                card.style.setProperty('--sat', entry.isIntersecting ? '80' : '0');
+                            }
+                        });
+                    }, {
+                        root: journeyList,
+                        threshold: 0.5
                     });
+                    observer.observe(item);
                 });
             }
-        }
+        })();
     </script>
     <!-- Lightbox Container -->
     <div id="lightbox" style="z-index: 10000;"
