@@ -7,6 +7,10 @@
     <title>Sahil Singh | IT Architect & Automation Specialist</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         if (!window.Lenis) {
             document.write('<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"><\/script>');
@@ -59,18 +63,219 @@
         }
     </script>
     <style>
+        :root {
+            --bg: #050505;
+            --fg: #f3f4f6;
+            --muted: #3f434a;
+            --accent-purple: #A663CC;
+            --accent-blue: #4CA9FF;
+        }
+
         html {
             scroll-behavior: auto;
         }
 
         body {
-            background-color: #050505;
+            background-color: var(--bg);
             color: #ffffff;
             font-family: 'Outfit', sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* === TEXT FILL EFFECT === */
+        .fill-text-section {
+            min-height: 180vh;
+            padding: 15vh 6vw 30vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            background: linear-gradient(180deg, #050505 0%, #0a0a12 50%, #050505 100%);
+        }
+
+        .fill-text-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(166, 99, 204, 0.3), transparent);
+            pointer-events: none;
+        }
+
+        .scroll-indicator-arrow {
+            position: absolute;
+            top: 8vh;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.6;
+            animation: bounceArrow 2s ease-in-out infinite;
+        }
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(15px);
+                opacity: 1;
+            }
+        }
+
+        .fill-text {
+            margin: 0;
+            font-size: clamp(24px, 4.5vw, 52px);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            text-wrap: pretty;
+            font-family: "Syne", system-ui, sans-serif;
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        .fill-text>span {
+            -webkit-background-clip: text;
+            background-clip: text;
+            background-color: var(--muted);
+            background-image: linear-gradient(135deg, var(--fg) 50%, var(--muted) 60%);
+            background-position: 0 0;
+            background-repeat: no-repeat;
+            background-size: 0% 200%;
+            color: transparent;
+            display: inline;
+            will-change: background-size;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fill-text>span {
+                background-size: 200% 200%;
+            }
+        }
+
+        /* === ENHANCED ANIMATIONS === */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(166, 99, 204, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(166, 99, 204, 0.4);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.8s ease-out forwards;
+        }
+
+        .animate-glow-pulse {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        /* Enhanced hover states for cards */
+        .bento-item {
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .bento-item:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(166, 99, 204, 0.5);
+            box-shadow:
+                0 30px 60px -15px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(166, 99, 204, 0.25);
+        }
+
+        /* Smooth gradient border animation */
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            padding: 1px;
+            background: linear-gradient(135deg, transparent, rgba(166, 99, 204, 0.3), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bento-item:hover::before {
+            opacity: 1;
+        }
+
+        /* Enhanced reveal animations */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(80px) scale(0.97);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-section.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Staggered children animation */
+        .reveal-section.active .stagger-child {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .reveal-section.active .stagger-child:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .reveal-section.active .stagger-child:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .reveal-section.active .stagger-child:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .reveal-section.active .stagger-child:nth-child(4) {
+            animation-delay: 0.4s;
         }
 
         /* --- Ambient Aurora (Red/Blue) --- */
@@ -452,6 +657,12 @@
 
         .animate-pulse-slow {
             animation: pulse-slow 4s ease-in-out infinite;
+        }
+
+        /* Text Scramble Effect */
+        .scramble-dud {
+            color: #A663CC;
+            opacity: 0.7;
         }
 
         /* Journey Line Animation - Slower & Smoother */
@@ -840,10 +1051,11 @@
             </div>
             <canvas id="hero-canvas"></canvas>
 
-            <!-- 1. Intro -->
+            <!-- 1. Intro - Text Scramble Effect -->
             <div id="text-1" class="overlay-text animate-float">
                 <div class="mask-container">
-                    <h2 class="text-4xl md:text-8xl font-bold tracking-tighter mb-2 animate-shimmer">HELLO.</h2>
+                    <h2 id="scramble-text" class="text-4xl md:text-8xl font-bold tracking-tighter mb-2"
+                        style="font-family: 'Outfit', sans-serif; letter-spacing: -0.02em;"></h2>
                 </div>
                 <div class="mask-container">
                     <p class="text-xl md:text-3xl font-light text-gray-300 tracking-wide uppercase">Welcome to the
@@ -893,6 +1105,22 @@
             </div>
         </div>
     </div>
+
+    <!-- Text Fill Effect Section -->
+    <section class="fill-text-section">
+        <svg class="scroll-indicator-arrow" width="42px" height="42px" viewBox="0 0 24 24" stroke-width="1.5"
+            fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L12 21M12 21L20.5 12.5M12 21L3.5 12.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+        <p class="fill-text js-fill">
+            <span>
+                Main interfaces nahi banata—main experiences choreograph karta hoon. Static design ek photo hai, mera
+                kaam ek performance hai. Har scroll soch samajh ke, har pixel measured, aur innovation woh language hai
+                jo har platform pe translate hoti hai. Main code se paint karta hoon.
+            </span>
+        </p>
+    </section>
 
     <!-- Main Content -->
     <div id="main-content">
@@ -1145,7 +1373,7 @@
                         class="absolute inset-0 bg-gradient-to-br from-blue-900 to-black group-hover:scale-105 transition-transform duration-700">
                     </div>
                     <div
-                        class="absolute inset-0 opacity-40 bg-[url('assets/projects/admin-portal/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
+                        class="absolute inset-0 opacity-40 bg-[url('public/assets/projects/admin-portal/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
                     </div>
                     <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
                         <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
@@ -1170,7 +1398,7 @@
                         class="absolute inset-0 bg-gradient-to-b from-purple-900 to-black group-hover:scale-105 transition-transform duration-700">
                     </div>
                     <div
-                        class="absolute inset-0 opacity-30 bg-[url('assets/projects/attendance-system/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-50">
+                        class="absolute inset-0 opacity-30 bg-[url('public/assets/projects/attendance-system/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-50">
                     </div>
                     <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
                         <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
@@ -1190,7 +1418,7 @@
                         class="absolute inset-0 bg-gradient-to-r from-orange-900 to-black group-hover:scale-105 transition-transform duration-700">
                     </div>
                     <div
-                        class="absolute inset-0 opacity-40 bg-[url('assets/projects/blender-3d/HDRENDER.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
+                        class="absolute inset-0 opacity-40 bg-[url('public/assets/projects/blender-3d/HDRENDER.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
                     </div>
                     <div class="bento-content p-8 flex justify-between items-end relative z-20 h-full">
                         <div class="transform group-hover:-translate-x-2 transition-transform duration-500">
@@ -1233,7 +1461,7 @@
                         class="absolute inset-0 bg-gradient-to-br from-teal-900 to-black group-hover:scale-105 transition-transform duration-700">
                     </div>
                     <div
-                        class="absolute inset-0 opacity-40 bg-[url('assets/projects/admin-portal-2/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
+                        class="absolute inset-0 opacity-40 bg-[url('public/assets/projects/admin-portal-2/image.png')] bg-cover bg-center transition-opacity duration-500 group-hover:opacity-60">
                     </div>
                     <div class="bento-content p-8 flex flex-col h-full justify-end relative z-20">
                         <div class="transform group-hover:-translate-y-2 transition-transform duration-500">
@@ -1343,25 +1571,25 @@
             'admin-portal': {
                 title: 'Admin Portal',
                 category: 'Business Dashboard',
-                image: 'url("assets/projects/admin-portal/image.png")',
+                image: 'url("public/assets/projects/admin-portal/image.png")',
                 description: 'A powerful business dashboard that simplifies how companies manage their data. Instead of wasting hours on spreadsheets, this system puts everything in one place—giving business owners clear visibility into their operations, improving security, and saving valuable time for the entire team.',
                 gallery: [
-                    { type: 'image', src: 'assets/projects/admin-portal/image.png', caption: 'Simple, secure login screen that keeps company data safe.' },
-                    { type: 'image', src: 'assets/projects/admin-portal/image (1).png', caption: 'Main dashboard: See all important business numbers at a glance.' },
-                    { type: 'image', src: 'assets/projects/admin-portal/image (2).png', caption: 'User list: Easily manage staff accounts and permissions.' }
+                    { type: 'image', src: 'public/assets/projects/admin-portal/image.png', caption: 'Simple, secure login screen that keeps company data safe.' },
+                    { type: 'image', src: 'public/assets/projects/admin-portal/image (1).png', caption: 'Main dashboard: See all important business numbers at a glance.' },
+                    { type: 'image', src: 'public/assets/projects/admin-portal/image (2).png', caption: 'User list: Easily manage staff accounts and permissions.' }
                 ]
             },
             'admin-portal-2': {
                 title: 'Admin Portal 2.0',
                 category: 'Analytics Dashboard',
-                image: 'url("assets/projects/admin-portal-2/image.png")',
+                image: 'url("public/assets/projects/admin-portal-2/image.png")',
                 description: 'An advanced version of the admin system designed for fast decision-making. It turns complex data into easy-to-read charts and graphs, helping managers spot trends instantly. This tool directly helps businesses grow by identifying what is working and what needs attention immediately.',
                 gallery: [
-                    { type: 'image', src: 'assets/projects/admin-portal-2/image.png', caption: 'Growth Chart: Track revenue and users in real-time.' },
-                    { type: 'image', src: 'assets/projects/admin-portal-2/image (1).png', caption: 'Sales Map: See exactly where your customers are coming from.' },
-                    { type: 'image', src: 'assets/projects/admin-portal-2/image (2).png', caption: 'Settings: Connect your favorite apps with one click.' },
-                    { type: 'image', src: 'assets/projects/admin-portal-2/image (3).png', caption: 'Staff Roles: Control who sees sensitive information.' },
-                    { type: 'image', src: 'assets/projects/admin-portal-2/image (4).png', caption: 'Activity Log: Keep track of every action taken in the system.' }
+                    { type: 'image', src: 'public/assets/projects/admin-portal-2/image.png', caption: 'Growth Chart: Track revenue and users in real-time.' },
+                    { type: 'image', src: 'public/assets/projects/admin-portal-2/image (1).png', caption: 'Sales Map: See exactly where your customers are coming from.' },
+                    { type: 'image', src: 'public/assets/projects/admin-portal-2/image (2).png', caption: 'Settings: Connect your favorite apps with one click.' },
+                    { type: 'image', src: 'public/assets/projects/admin-portal-2/image (3).png', caption: 'Staff Roles: Control who sees sensitive information.' },
+                    { type: 'image', src: 'public/assets/projects/admin-portal-2/image (4).png', caption: 'Activity Log: Keep track of every action taken in the system.' }
                 ]
             },
             'after-effects': {
@@ -1370,59 +1598,59 @@
                 image: 'linear-gradient(to bottom, #7f1d1d, #000)',
                 description: 'High-energy video content designed to grab attention on social media and marketing channels. In a crowded digital world, these animations help brands stand out, explain their products quickly, and drive more customer engagement and sales.',
                 gallery: [
-                    { type: 'video', src: 'assets/projects/after-effects/02. FINAL COMPOSITION.mp4', caption: 'Dynamic Logo Reveal: Makes your brand unforgettable.' },
-                    { type: 'video', src: 'assets/projects/after-effects/Customize Your Logo Here_1.mp4', caption: 'Commercial Template: Professional intro for business videos.' },
-                    { type: 'video', src: 'assets/projects/after-effects/IMMACULATE vv.mp4', caption: 'Music Visualizer: Engaging content for entertainment brands.' },
-                    { type: 'video', src: 'assets/projects/after-effects/Render.mp4', caption: 'Visual Effects: Adding 3D elements to real footage.' },
-                    { type: 'video', src: 'assets/projects/after-effects/order (1).mp4', caption: 'Product Promo: High-speed showcase to boost sales.' }
+                    { type: 'video', src: 'public/assets/projects/after-effects/02. FINAL COMPOSITION.mp4', caption: 'Dynamic Logo Reveal: Makes your brand unforgettable.' },
+                    { type: 'video', src: 'public/assets/projects/after-effects/Customize Your Logo Here_1.mp4', caption: 'Commercial Template: Professional intro for business videos.' },
+                    { type: 'video', src: 'public/assets/projects/after-effects/IMMACULATE vv.mp4', caption: 'Music Visualizer: Engaging content for entertainment brands.' },
+                    { type: 'video', src: 'public/assets/projects/after-effects/Render.mp4', caption: 'Visual Effects: Adding 3D elements to real footage.' },
+                    { type: 'video', src: 'public/assets/projects/after-effects/order (1).mp4', caption: 'Product Promo: High-speed showcase to boost sales.' }
                 ]
             },
             'attendance-system': {
                 title: 'Attendance System',
                 category: 'Efficiency Tool',
-                image: 'url("assets/projects/attendance-system/image.png")',
+                image: 'url("public/assets/projects/attendance-system/image.png")',
                 description: 'An automated system that replaces paper attendance and punch cards. It guarantees accurate payroll by tracking exactly when employees start and finish work. This reduces wage theft, cuts down administrative costs, and lets HR focus on people instead of paperwork.',
                 gallery: [
-                    { type: 'image', src: 'assets/projects/attendance-system/image.png', caption: 'Employee Login: Fast and secure daily check-in.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (1).png', caption: 'Manager View: See who is present or absent instantly.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (2).png', caption: 'Time Logs: Exact records of clock-in and clock-out times.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (3).png', caption: 'Report Generator: Create monthly payroll summaries in seconds.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (4).png', caption: 'Attendance Trends: Visual summary of staff reliability.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (5).png', caption: 'Leave Requests: Simple way to apply for time off.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (6).png', caption: 'Alerts: System highlights late arrivals automatically.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (7).png', caption: 'Shift Planner: Organize monthly work schedules easily.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (8).png', caption: 'Admin Control: Set rules for holidays and work hours.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (1) copy.png', caption: 'Mobile Dashboard: check stats on the go.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image (2) copy.png', caption: 'Mobile History: Employees can see their own records.' },
-                    { type: 'image', src: 'assets/projects/attendance-system/image copy.png', caption: 'Mobile Login: Easy access from any device.' }
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image.png', caption: 'Employee Login: Fast and secure daily check-in.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (1).png', caption: 'Manager View: See who is present or absent instantly.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (2).png', caption: 'Time Logs: Exact records of clock-in and clock-out times.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (3).png', caption: 'Report Generator: Create monthly payroll summaries in seconds.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (4).png', caption: 'Attendance Trends: Visual summary of staff reliability.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (5).png', caption: 'Leave Requests: Simple way to apply for time off.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (6).png', caption: 'Alerts: System highlights late arrivals automatically.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (7).png', caption: 'Shift Planner: Organize monthly work schedules easily.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (8).png', caption: 'Admin Control: Set rules for holidays and work hours.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (1) copy.png', caption: 'Mobile Dashboard: check stats on the go.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image (2) copy.png', caption: 'Mobile History: Employees can see their own records.' },
+                    { type: 'image', src: 'public/assets/projects/attendance-system/image copy.png', caption: 'Mobile Login: Easy access from any device.' }
                 ]
             },
             'blender-3d': {
                 title: 'Blender 3D Projects',
                 category: 'Product Visualization',
-                image: 'url("assets/projects/blender-3d/HDRENDER.png")',
+                image: 'url("public/assets/projects/blender-3d/HDRENDER.png")',
                 description: 'Top-tier 3D visuals that make products look better than real life. Whether for advertising or concept design, these realistic renders help customers understand the product quality before they buy, increasing confidence and sales conversion.',
                 gallery: [
-                    { type: 'image', src: 'assets/projects/blender-3d/HDRENDER.png', caption: 'Product Shot: High-end audio gear that looks tangible.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/DANDD.png', caption: 'Concept Art: Immersive environment for game design.' },
-                    { type: 'video', src: 'assets/projects/blender-3d/FERRARI MAKING EXPORT - Made with Clipchamp.mp4', caption: 'Car Modeling: Showing the complex design process.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/RENDER DONE.jpg', caption: 'Environment Design: Futuristic city concept.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untishjuyqcdresdfdhjhq.png', caption: 'Abstract Art: Modern visuals for tech branding.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untisssstled.png', caption: 'Material Quality: Realistic glass and light effects.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untisstled.png', caption: 'Fluid Quality: Simulating liquids for beverage ads.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untithjhjhled.png', caption: 'Lighting Study: Professional studio look.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untitlXXXSed.png', caption: 'Texture Detail: Realistic metal weathering.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untitleSASASAd.png', caption: 'Terrain Generation: Creating landscapes for film.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untitslddded.png', caption: 'Visual Integration: Placing 3D objects in scenes.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.54 PM.jpeg', caption: 'Character Stylization: Unique avatars for digital platforms.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM.jpeg', caption: 'Game Assets: Optimized models for real-time engines.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM (1).jpeg', caption: 'Scene Composition: Balancing elements in frame.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM (2).jpeg', caption: 'Clay Render: Focusing on pure form and silhouette.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.56 PM.jpeg', caption: 'Wireframe View: Clean geometry for professional use.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.53 PM.jpeg', caption: 'Color Study: Mood setting through palette choice.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.52 PM (2).jpeg', caption: 'Detail Focus: High-resolution closeups.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untitsled.png', caption: 'Abstract Composition: Exploring form and space.' },
-                    { type: 'image', src: 'assets/projects/blender-3d/untitsssled.png', caption: 'Material Study: Glossy surfaces and reflections.' }
+                    { type: 'image', src: 'public/assets/projects/blender-3d/HDRENDER.png', caption: 'Product Shot: High-end audio gear that looks tangible.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/DANDD.png', caption: 'Concept Art: Immersive environment for game design.' },
+                    { type: 'video', src: 'public/assets/projects/blender-3d/FERRARI MAKING EXPORT - Made with Clipchamp.mp4', caption: 'Car Modeling: Showing the complex design process.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/RENDER DONE.jpg', caption: 'Environment Design: Futuristic city concept.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untishjuyqcdresdfdhjhq.png', caption: 'Abstract Art: Modern visuals for tech branding.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untisssstled.png', caption: 'Material Quality: Realistic glass and light effects.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untisstled.png', caption: 'Fluid Quality: Simulating liquids for beverage ads.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untithjhjhled.png', caption: 'Lighting Study: Professional studio look.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untitlXXXSed.png', caption: 'Texture Detail: Realistic metal weathering.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untitleSASASAd.png', caption: 'Terrain Generation: Creating landscapes for film.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untitslddded.png', caption: 'Visual Integration: Placing 3D objects in scenes.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.54 PM.jpeg', caption: 'Character Stylization: Unique avatars for digital platforms.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM.jpeg', caption: 'Game Assets: Optimized models for real-time engines.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM (1).jpeg', caption: 'Scene Composition: Balancing elements in frame.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.55 PM (2).jpeg', caption: 'Clay Render: Focusing on pure form and silhouette.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.56 PM.jpeg', caption: 'Wireframe View: Clean geometry for professional use.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.53 PM.jpeg', caption: 'Color Study: Mood setting through palette choice.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/WhatsApp Image 2025-08-20 at 12.17.52 PM (2).jpeg', caption: 'Detail Focus: High-resolution closeups.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untitsled.png', caption: 'Abstract Composition: Exploring form and space.' },
+                    { type: 'image', src: 'public/assets/projects/blender-3d/untitsssled.png', caption: 'Material Study: Glossy surfaces and reflections.' }
                 ]
             }
         };
@@ -1579,7 +1807,7 @@
         const preloadImages = () => {
             for (let i = 0; i < frameCount; i++) {
                 const img = new Image();
-                img.src = `sequence/frame_${i.toString().padStart(3, "0")}.png`;
+                img.src = `public/sequence/frame_${i.toString().padStart(3, "0")}.png`;
                 img.onload = () => {
                     imagesLoaded++;
                     const percent = (imagesLoaded / frameCount) * 100;
@@ -1605,9 +1833,9 @@
         // Main Animation Loop (Decoupled from Scroll)
         const animateSequence = () => {
             if (isLoaded) {
-                // Linear Interpolation (LERP) for smoothness
-                // Adjust 0.08 for more/less smoothing (lower = smoother/slower)
-                scrollProgress += (targetProgress - scrollProgress) * 0.08;
+                // Linear Interpolation (LERP) for ultra-smooth scrolling
+                // Lower value = smoother/slower (0.05 for premium buttery feel)
+                scrollProgress += (targetProgress - scrollProgress) * 0.05;
 
                 const frameIndex = Math.min(frameCount - 1, Math.floor(scrollProgress * (frameCount - 1)));
                 renderFrame(frameIndex);
@@ -1686,15 +1914,91 @@
             document.body.classList.toggle('overflow-hidden');
         }
 
+        // Enhanced Lenis smooth scroll configuration for ultra-smooth experience
         const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            duration: 1.8, // Increased from 1.2 for smoother feel
+            easing: (t) => {
+                // Custom easing: smoother ease-out with very gentle deceleration
+                return t === 1 ? 1 : 1 - Math.pow(2, -12 * t);
+            },
             direction: 'vertical',
             smooth: true,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            wheelMultiplier: 0.8, // Reduced for more controlled scrolling
+            lerp: 0.08, // Lower lerp for smoother interpolation
         });
 
+        // Sync GSAP ScrollTrigger with Lenis
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+
+            lenis.on('scroll', ScrollTrigger.update);
+
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+
+            gsap.ticker.lagSmoothing(0);
+
+            // Text Fill Effect Animation
+            const fillTarget = document.querySelector(".js-fill > span");
+            if (fillTarget && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                gsap.to(fillTarget, {
+                    backgroundSize: "200% 200%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: ".js-fill",
+                        start: "top 85%",
+                        end: "bottom 30%",
+                        scrub: 1.5, // Smooth scrubbing
+                    }
+                });
+            }
+
+            // Enhanced section reveal animations with GSAP
+            gsap.utils.toArray('.reveal-section').forEach((section, i) => {
+                gsap.fromTo(section,
+                    {
+                        opacity: 0,
+                        y: 80,
+                        scale: 0.97
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 1.2,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 85%",
+                            end: "top 50%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            // Parallax effect for bento items
+            gsap.utils.toArray('.bento-item').forEach((item) => {
+                gsap.to(item, {
+                    y: -20,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: 2
+                    }
+                });
+            });
+        }
+
         function raf(time) {
-            lenis.raf(time);
+            if (typeof gsap === 'undefined') {
+                lenis.raf(time);
+            }
             updateScroll(window.scrollY);
             requestAnimationFrame(raf);
         }
@@ -1702,6 +2006,92 @@
         requestAnimationFrame(raf);
         preloadImages();
         resizeCanvas();
+
+        // --- TEXT SCRAMBLE EFFECT ---
+        class TextScramble {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#________';
+                this.update = this.update.bind(this);
+            }
+
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise(resolve => this.resolve = resolve);
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+
+            update() {
+                let output = '';
+                let complete = 0;
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="scramble-dud">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+                this.el.innerHTML = output;
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        // Initialize Text Scramble after loading
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const scrambleEl = document.getElementById('scramble-text');
+                if (scrambleEl) {
+                    const fx = new TextScramble(scrambleEl);
+                    const phrases = [
+                        'HELLO.',
+                        'I CREATE.',
+                        'I AUTOMATE.',
+                        'I INNOVATE.',
+                        'I BUILD.',
+                        'I DESIGN.',
+                        'WELCOME.'
+                    ];
+
+                    let counter = 0;
+                    const next = () => {
+                        fx.setText(phrases[counter]).then(() => {
+                            setTimeout(next, 1500);
+                        });
+                        counter = (counter + 1) % phrases.length;
+                    };
+                    next();
+                }
+            }, 800); // Start after loading animation
+        });
     </script>
     <!-- Lightbox Container -->
     <div id="lightbox" style="z-index: 10000;"
