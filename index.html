@@ -1595,7 +1595,7 @@
 
                     <!-- Col 1: Automation -->
                     <div
-                        class="p-10 rounded-[2rem] bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all duration-500 hover:bg-white/10 group reveal-section delay-100 relative overflow-hidden">
+                        class="p-10 rounded-[2rem] bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all duration-500 hover:bg-white/10 group relative overflow-hidden">
                         <div
                             class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
@@ -1637,7 +1637,7 @@
 
                     <!-- Col 2: Creative -->
                     <div
-                        class="p-10 rounded-[2rem] bg-white/5 border border-white/10 hover:border-pink-500/50 transition-all duration-500 hover:bg-white/10 group reveal-section delay-200 relative overflow-hidden">
+                        class="p-10 rounded-[2rem] bg-white/5 border border-white/10 hover:border-pink-500/50 transition-all duration-500 hover:bg-white/10 group relative overflow-hidden">
                         <div
                             class="absolute inset-0 bg-gradient-to-bl from-pink-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
@@ -2362,7 +2362,7 @@
 
         // Enhanced Lenis smooth scroll configuration for ultra-smooth experience
         const lenis = new Lenis({
-            duration: 1.8, // Increased from 1.2 for smoother feel
+            duration: 1.0, // Reduced from 1.8 for snappier, less "laggy" feel
             easing: (t) => {
                 // Custom easing: smoother ease-out with very gentle deceleration
                 return t === 1 ? 1 : 1 - Math.pow(2, -12 * t);
