@@ -2258,22 +2258,30 @@
 
         // --- 2. PRELOADER ---
         const preloadImages = () => {
+            let loadedCount = 0;
+            const onImageLoadOrError = () => {
+                loadedCount++;
+                const percent = (loadedCount / frameCount) * 100;
+                loadProgress.style.width = percent + '%';
+
+                if (loadedCount === frameCount) {
+                    isLoaded = true;
+                    // Filter out failed images to prevent drawing errors, or just fallback
+                    setTimeout(() => {
+                        loadingScreen.classList.add('opacity-0', 'pointer-events-none');
+                        renderFrame(0);
+                        document.getElementById('text-1').classList.add('visible');
+                    }, 800);
+                }
+            };
+
             for (let i = 0; i < frameCount; i++) {
                 const img = new Image();
                 img.src = `sequence/frame_${i.toString().padStart(3, "0")}.png`;
-                img.onload = () => {
-                    imagesLoaded++;
-                    const percent = (imagesLoaded / frameCount) * 100;
-                    loadProgress.style.width = percent + '%';
-
-                    if (imagesLoaded === frameCount) {
-                        isLoaded = true;
-                        setTimeout(() => {
-                            loadingScreen.classList.add('opacity-0', 'pointer-events-none');
-                            renderFrame(0);
-                            document.getElementById('text-1').classList.add('visible');
-                        }, 800);
-                    }
+                img.onload = onImageLoadOrError;
+                img.onerror = () => {
+                    console.warn(`Failed to load frame ${i}`);
+                    onImageLoadOrError();
                 };
                 images.push(img);
             }
