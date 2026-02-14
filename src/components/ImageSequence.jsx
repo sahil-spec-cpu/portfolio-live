@@ -1,5 +1,6 @@
+
 import { useEffect, useRef, useState } from "react";
-import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useScroll, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
 
 const frameCount = 192;
 
@@ -15,23 +16,29 @@ const preloadImages = () => {
 
 export default function ImageSequence() {
     const canvasRef = useRef(null);
-    const [images, setImages] = useState([]);
+    const imagesRef = useRef([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const { scrollYProgress } = useScroll();
 
     // Transform scroll progress to frame index
     const frameIndex = useTransform(scrollYProgress, [0, 1], [0, frameCount - 1]);
 
+    // Smooth the frame index for better visual flow
+    const smoothFrameIndex = useSpring(frameIndex, { damping: 20, stiffness: 100 });
+
     useEffect(() => {
         const imgs = preloadImages();
+        imagesRef.current = imgs;
+
         let loadedCount = 0;
+        const totalImages = imgs.length;
 
         const checkLoad = () => {
             loadedCount++;
-            if (loadedCount === frameCount) {
+            if (loadedCount === totalImages) {
                 setIsLoaded(true);
-                setImages(imgs);
-                // Initial render
+            } else if (loadedCount === 1) {
+                // Initial render with first image to avoid blank screen
                 requestAnimationFrame(() => renderFrame(0));
             }
         };
@@ -41,23 +48,22 @@ export default function ImageSequence() {
                 checkLoad();
             } else {
                 img.onload = checkLoad;
-                img.onerror = checkLoad; // Proceed anyway on error
+                img.onerror = checkLoad;
             }
         });
     }, []);
 
     const renderFrame = (index) => {
         const canvas = canvasRef.current;
-        if (!canvas || images.length === 0) return;
+        if (!canvas || imagesRef.current.length === 0) return;
 
         const ctx = canvas.getContext("2d");
-        const img = images[index];
+        const img = imagesRef.current[index];
 
         if (!img) return;
 
-        // Image formatting: cover
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // Clear canvas before drawing
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         const x = (canvas.width / 2) - (img.width / 2) * scale;
@@ -66,36 +72,36 @@ export default function ImageSequence() {
         ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
     };
 
-    useMotionValueEvent(frameIndex, "change", (latest) => {
+    // Handle canvas resizing separately
+    useEffect(() => {
+        const handleResize = () => {
+            const canvas = canvasRef.current;
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                // Re-render current frame after resize
+                renderFrame(Math.round(smoothFrameIndex.get()));
+            }
+        };
+
+        // Initial sizing
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useMotionValueEvent(smoothFrameIndex, "change", (latest) => {
         requestAnimationFrame(() => {
             renderFrame(Math.round(latest));
         });
     });
 
-    // Render first frame on load
-    useEffect(() => {
-        if (images.length > 0) {
-            renderFrame(0);
-        }
-    }, [images, isLoaded]);
-
-    // Handle resize
-    useEffect(() => {
-        const handleResize = () => {
-            if (images.length > 0) {
-                renderFrame(Math.round(frameIndex.get()));
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [images]);
-
-
     return (
         <div className="fixed inset-0 w-full h-full z-0 bg-black">
             <canvas ref={canvasRef} className="block w-full h-full" />
             {!isLoaded && (
-                <div className="absolute inset-0 flex items-center justify-content-center bg-black text-white z-50">
+                <div className="absolute inset-0 flex items-center justify-center bg-black text-white z-50">
                     <div className="text-2xl font-light animate-pulse">Loading Experience...</div>
                 </div>
             )}
