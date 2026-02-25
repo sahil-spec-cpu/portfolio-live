@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
+import BrutalIntro from './components/BrutalIntro'
 import ImageSequence from './components/ImageSequence'
 
 
@@ -25,16 +26,16 @@ function App() {
     }, [])
 
     return (
-        <div className="relative w-full bg-black min-h-[500vh]">
-            <ImageSequence />
-            <div className="relative z-10">
-                <div className="h-[100vh] flex items-center justify-center text-white pointer-events-none">
-                    <h1 className="text-6xl font-bold tracking-tighter mix-blend-difference">SCROLL TO EXPLORE</h1>
+        <div className="relative w-full bg-black">
+            <BrutalIntro />
+
+            <div className="relative w-full min-h-[500vh]">
+                <ImageSequence />
+                <div className="relative z-10 pointer-events-none">
+                    <div className="h-[100vh] flex items-center justify-center text-white">
+                        <h1 className="text-6xl font-bold tracking-tighter mix-blend-difference pointer-events-auto">SCROLL TO EXPLORE</h1>
+                    </div>
                 </div>
-
-
-
-                <div className="h-[100vh]"></div>
             </div>
         </div>
     )
